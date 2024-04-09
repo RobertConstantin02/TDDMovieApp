@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">TDDMovieApp</string>
+    <string name="search_field_hint">Search…</string>
+    <string name="search_button">Get Results</string>
+    <string name="movie_item">Movie Item</string>
 </resources>
