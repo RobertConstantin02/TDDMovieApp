@@ -1,14 +1,10 @@
 package com.example.tddmovieapp
 
-import androidx.compose.ui.test.assertIsDisplayed
-import androidx.compose.ui.test.junit4.AndroidComposeTestRule
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
-import androidx.compose.ui.test.onChildren
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextInput
-import androidx.test.ext.junit.rules.ActivityScenarioRule
-import com.example.tddmovieapp.presentation.model.MovieVO
+import com.example.tddmovieapp.robot.launchSearchScreen
 import org.junit.Rule
 import org.junit.Test
 
@@ -37,29 +33,4 @@ class SearchScreenTest {
         val searchButton = rule.activity.getString(R.string.search_button)
         rule.onNodeWithContentDescription(searchButton).performClick()
     }
-
 }
-
-fun launchSearchScreen(
-    rule: AndroidComposeTestRule<ActivityScenarioRule<MainActivity>, MainActivity>,
-    block: SearchScreenRobot.() -> Unit
-): SearchScreenRobot {
-    return SearchScreenRobot(rule).apply(block)
-}
-
-class SearchScreenRobot(private val rule: AndroidComposeTestRule<ActivityScenarioRule<MainActivity>, MainActivity>) {
-    infix fun verify(block: SearchScreenVerification.() -> Unit): SearchScreenVerification {
-        return SearchScreenVerification(rule).apply(block)
-    }
-}
-
-class SearchScreenVerification(private val rule: AndroidComposeTestRule<ActivityScenarioRule<MainActivity>, MainActivity>) {
-    fun searchedMoviesAreShown(vararg movies: MovieVO) {
-        repeat(movies.count()) {
-            val movieItem = rule.activity.getString(R.string.movie_item)
-            rule.onNodeWithContentDescription(movieItem).assertIsDisplayed()
-        }
-    }
-}
-
-
