@@ -12,7 +12,6 @@ class SearchScreenTest {
 
     @Test
     fun performSearchMovies() {
-
         launchSearchScreen(rule) {
             typeMovieTitle("iron man")
             search()

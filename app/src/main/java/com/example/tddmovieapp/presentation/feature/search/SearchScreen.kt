@@ -20,6 +20,7 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.tddmovieapp.R
+import com.example.tddmovieapp.presentation.component.MovieItem
 import com.example.tddmovieapp.presentation.model.MovieVO
 
 @Composable
@@ -72,7 +73,7 @@ fun SearchScreenContent(
             modifier = modifier.semantics { contentDescription = lazyColumnContentDescription }
         ) {
             items(moviesItems) {
-                // TODO: create the movieItem as last step for acceptance test
+                MovieItem(onItemClick = {}, imageUrl = it.image, it.title)
             }
         }
     }
