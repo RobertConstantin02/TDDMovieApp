@@ -67,6 +67,8 @@ dependencies {
     implementation(libs.bundles.hilt)
     implementation(platform(libs.compose.bom))
     implementation(libs.bundles.compose)
+    implementation(libs.compose.preview)
+    implementation(libs.compose.ui.tooling)
 
     kapt(libs.hilt.compiler)
 
