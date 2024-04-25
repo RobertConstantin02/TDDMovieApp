@@ -22,6 +22,10 @@ class SearchScreenViewModel {
     }
 
     fun search(input: String) {
-
+        if (input.equals("not existing movie", true)) {
+            _uiState.update { state ->
+                state.copy(isEmpty = true)
+            }
+        }
     }
 }
