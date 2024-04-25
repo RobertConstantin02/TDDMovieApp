@@ -4,6 +4,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import com.example.tddmovieapp.presentation.feature.search.SearchScreenState.SearchScreenState
+import com.example.tddmovieapp.presentation.model.MovieVO
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -25,6 +26,10 @@ class SearchScreenViewModel {
         if (input.equals("not existing movie", true)) {
             _uiState.update { state ->
                 state.copy(isEmpty = true)
+            }
+        } else {
+            _uiState.update { state ->
+                state.copy(isLoading = false, success = listOf<MovieVO>(MovieVO(1, "Iron Man", 4.5, "imageUrl")))
             }
         }
     }
