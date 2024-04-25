@@ -18,7 +18,7 @@ class SearchViewModelTest {
     fun `when search success and no Movies are received`() {
         //Given
         val viewModel = SearchScreenViewModel()
-        val expectedState = SearchScreenState().copy(isEmpty = true)
+        val expectedState = SearchScreenState().copy(isLoading = false, isEmpty = true)
         val input = "not existing movie"
         //When
         viewModel.search(input)
@@ -28,8 +28,8 @@ class SearchViewModelTest {
 
     @Test
     fun `when search success and one Movie received`() {
-        val movieListWithSingleItem = listOf<MovieVO>(MovieVO(1, "Iron Man", 4.5, "imageUrl"))
-        val expectedState = SearchScreenState().copy(isLoading = false, success = movieListWithSingleItem)
+        val movieListWithSingleItem = listOf<MovieVO>(MovieVO(131, "Iron Man", 4.5, "imageUrl"))
+        val expectedState = SearchScreenState().copy(isLoading = false,  isEmpty = false, success = movieListWithSingleItem)
         val viewModel = SearchScreenViewModel()
         val input = "iron"
 
@@ -42,14 +42,14 @@ class SearchViewModelTest {
     fun `when search success and many Movies received`() {
         val viewModel = SearchScreenViewModel()
         val movieListWithManyItems = listOf<MovieVO>(
-            MovieVO(1, "Avangers", 4.1, "imageUrl1"),
-            MovieVO(1, "Black Panther", 5.0, "imageUrl2")
+            MovieVO(4532, "Marvel: Avangers", 4.1, "imageUrl1"),
+            MovieVO(5675, "Marvel: Black Panther", 5.0, "imageUrl2")
         )
 
         val input = "Marvel"
         viewModel.search(input)
 
-        val expectedState = SearchScreenState().copy(isLoading = false, success = movieListWithManyItems)
+        val expectedState = SearchScreenState().copy(isLoading = false,  isEmpty = false, success = movieListWithManyItems)
         assertThat(viewModel.uiState.value).isEqualTo(expectedState)
     }
 }
