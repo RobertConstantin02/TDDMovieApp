@@ -27,9 +27,16 @@ class SearchScreenViewModel {
             _uiState.update { state ->
                 state.copy(isEmpty = true)
             }
-        } else {
+        } else if (input.equals("iron", true)) {
             _uiState.update { state ->
                 state.copy(isLoading = false, success = listOf<MovieVO>(MovieVO(1, "Iron Man", 4.5, "imageUrl")))
+            }
+        } else {
+            _uiState.update { state ->
+                state.copy(isLoading = false, success = listOf<MovieVO>(
+                    MovieVO(1, "Avangers", 4.1, "imageUrl1"),
+                    MovieVO(1, "Black Panther", 5.0, "imageUrl2")
+                ))
             }
         }
     }
