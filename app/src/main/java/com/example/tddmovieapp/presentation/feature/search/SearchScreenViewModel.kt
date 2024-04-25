@@ -7,6 +7,7 @@ import com.example.tddmovieapp.presentation.feature.search.SearchScreenState.Sea
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 
 class SearchScreenViewModel {
 
@@ -18,5 +19,9 @@ class SearchScreenViewModel {
 
     fun updateSearchQuery(newValue: String) {
         queryState = newValue
+    }
+
+    fun search(input: String) {
+
     }
 }
