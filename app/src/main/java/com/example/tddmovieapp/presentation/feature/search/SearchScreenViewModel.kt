@@ -42,28 +42,5 @@ class SearchScreenViewModel {
                 state.copy(isLoading = false, isEmpty = true)
             }
         }
-
-//        if (input.equals("not existing movie", true)) {
-//            _uiState.update { state ->
-//                state.copy(isEmpty = true)
-//            }
-//        } else if (input.equals("iron", true)) {
-//            _uiState.update { state ->
-//                state.copy(
-//                    isLoading = false,
-//                    isEmpty = false,
-//                    success = listOf<MovieVO>(MovieVO(131, "Iron Man", 4.5, "imageUrl"))
-//                )
-//            }
-//        } else {
-//            _uiState.update { state ->
-//                state.copy(
-//                    isLoading = false, isEmpty = false, success = listOf<MovieVO>(
-//                        MovieVO(4532, "Avangers", 4.1, "imageUrl1"),
-//                        MovieVO(5675, "Black Panther", 5.0, "imageUrl2")
-//                    )
-//                )
-//            }
-//        }
     }
 }
