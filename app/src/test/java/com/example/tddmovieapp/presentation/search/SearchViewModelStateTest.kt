@@ -1,7 +1,8 @@
 package com.example.tddmovieapp.presentation.search
 
-import com.example.tddmovieapp.presentation.feature.search.SearchScreenState.SearchScreenState
+import com.example.tddmovieapp.presentation.feature.search.SearchScreenState
 import com.example.tddmovieapp.presentation.feature.search.SearchScreenViewModel
+import com.example.tddmovieapp.presentation.feature.search.test_doubles.SearchMoviesUseCaseStub
 import com.google.common.truth.Truth.assertThat
 import org.junit.Before
 import org.junit.jupiter.api.Test
@@ -12,7 +13,7 @@ class SearchViewModelStateTest {
 
     @Before
     fun setUp() {
-        viewModel = SearchScreenViewModel()
+        viewModel = SearchScreenViewModel(SearchMoviesUseCaseStub())
     }
 
     @Test

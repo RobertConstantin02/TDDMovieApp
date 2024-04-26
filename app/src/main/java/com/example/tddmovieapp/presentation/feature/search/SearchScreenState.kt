@@ -1,4 +1,4 @@
-package com.example.tddmovieapp.presentation.feature.search.SearchScreenState
+package com.example.tddmovieapp.presentation.feature.search
 
 import com.example.tddmovieapp.presentation.model.MovieVO
 

@@ -1,7 +1,8 @@
 package com.example.tddmovieapp.presentation.search
 
-import com.example.tddmovieapp.presentation.feature.search.SearchScreenState.SearchScreenState
+import com.example.tddmovieapp.presentation.feature.search.SearchScreenState
 import com.example.tddmovieapp.presentation.feature.search.SearchScreenViewModel
+import com.example.tddmovieapp.presentation.feature.search.test_doubles.SearchMoviesUseCaseStub
 import com.example.tddmovieapp.presentation.model.MovieVO
 import com.google.common.truth.Truth.assertThat
 import org.junit.jupiter.api.Test
@@ -17,7 +18,7 @@ class SearchViewModelTest {
     @Test
     fun `when search success and no Movies are received`() {
         //Given
-        val viewModel = SearchScreenViewModel()
+        val viewModel = SearchScreenViewModel(SearchMoviesUseCaseStub())
         val expectedState = SearchScreenState().copy(isLoading = false, isEmpty = true)
         val input = "not existing movie"
         //When
@@ -30,7 +31,7 @@ class SearchViewModelTest {
     fun `when search success and one Movie received`() {
         val movieListWithSingleItem = listOf<MovieVO>(MovieVO(131, "Iron Man", 4.5, "imageUrl"))
         val expectedState = SearchScreenState().copy(isLoading = false,  isEmpty = false, success = movieListWithSingleItem)
-        val viewModel = SearchScreenViewModel()
+        val viewModel = SearchScreenViewModel(SearchMoviesUseCaseStub())
         val input = "iron"
 
         viewModel.search(input)
@@ -40,7 +41,7 @@ class SearchViewModelTest {
 
     @Test
     fun `when search success and many Movies received`() {
-        val viewModel = SearchScreenViewModel()
+        val viewModel = SearchScreenViewModel(SearchMoviesUseCaseStub())
         val movieListWithManyItems = listOf<MovieVO>(
             MovieVO(4532, "Marvel: Avangers", 4.1, "imageUrl1"),
             MovieVO(5675, "Marvel: Black Panther", 5.0, "imageUrl2")
