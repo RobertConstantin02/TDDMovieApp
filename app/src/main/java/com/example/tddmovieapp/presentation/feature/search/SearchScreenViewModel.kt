@@ -3,14 +3,13 @@ package com.example.tddmovieapp.presentation.feature.search
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import com.example.tddmovieapp.domain.usecase.ISearchMoviesUseCase
-import com.example.tddmovieapp.presentation.feature.search.test_doubles.SearchMoviesUseCaseStub
+import com.example.tddmovieapp.domain.usecase.SearchMoviesUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
-class SearchScreenViewModel(private val searchMoviesUseCaseStub: ISearchMoviesUseCase) {
+class SearchScreenViewModel(private val searchMoviesUseCaseStub: SearchMoviesUseCase) {
 
     private val _uiState = MutableStateFlow(SearchScreenState())
     val uiState: StateFlow<SearchScreenState> = _uiState.asStateFlow()
@@ -18,8 +17,11 @@ class SearchScreenViewModel(private val searchMoviesUseCaseStub: ISearchMoviesUs
     var queryState by mutableStateOf("")
         private set
 
-    fun updateSearchQuery(newValue: String) {
-        queryState = newValue
+    fun onEvent(event: SearchScreenEvent) {
+        when (event) {
+            is SearchScreenEvent.OnUpdateQuery -> queryState = event.input
+            is SearchScreenEvent.OnSearchMovies -> search(queryState)
+        }
     }
 
     fun search(input: String) {

@@ -1,9 +1,9 @@
 package com.example.tddmovieapp.presentation.feature.search.test_doubles
 
-import com.example.tddmovieapp.domain.usecase.ISearchMoviesUseCase
+import com.example.tddmovieapp.domain.usecase.SearchMoviesUseCase
 import com.example.tddmovieapp.presentation.model.MovieVO
 
-class SearchMoviesUseCaseStub : ISearchMoviesUseCase {
+class SearchMoviesUseCaseImplSuccessStub : SearchMoviesUseCase() {
     override operator fun invoke(
         query: String,
         success: (listMovies: List<MovieVO>) -> Unit,
