@@ -1,5 +1,6 @@
 package com.example.tddmovieapp.presentation.search
 
+import com.example.tddmovieapp.domain.test_doubles.SearchMoviesUseCaseImplEmptyStub
 import com.example.tddmovieapp.presentation.feature.search.SearchScreenEvent
 import com.example.tddmovieapp.presentation.feature.search.SearchScreenState
 import com.example.tddmovieapp.presentation.feature.search.SearchScreenViewModel
@@ -48,6 +49,7 @@ class SearchViewModelTest {
         //Given
         val expectedState = SearchScreenState().copy(isLoading = false, isEmpty = true)
         val input = "not existing movie"
+        viewModel = SearchScreenViewModel(SearchMoviesUseCaseImplEmptyStub())
         //When
         viewModel.onEvent(SearchScreenEvent.OnUpdateQuery(input))
         viewModel.onEvent(SearchScreenEvent.OnSearchMovies)

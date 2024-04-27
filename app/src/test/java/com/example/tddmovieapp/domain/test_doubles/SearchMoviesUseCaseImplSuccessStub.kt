@@ -21,10 +21,6 @@ class SearchMoviesUseCaseImplSuccessStub : SearchMoviesUseCase() {
             movie.title.contains(query, true)
         }
 
-        if (searchedMovies.isNotEmpty()) {
-            success(searchedMovies)
-        } else {
-            empty()
-        }
+        success(searchedMovies)
     }
 }
