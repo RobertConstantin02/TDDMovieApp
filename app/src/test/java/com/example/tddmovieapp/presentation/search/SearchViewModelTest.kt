@@ -10,26 +10,12 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
 class SearchViewModelTest {
-    //Z
-    //O
-    //M
-    //B
-    //I
-    //E
 
     private lateinit var viewModel: SearchScreenViewModel
 
     @BeforeEach
     fun setUp() {
         viewModel = SearchScreenViewModel(SearchMoviesUseCaseImplSuccessStub())
-    }
-
-    @Test
-    fun `initial state is the default one`() {
-        //Given
-        val expected = SearchScreenState()
-        //Then
-        assertThat(viewModel.uiState.value).isEqualTo(expected)
     }
 
     @Test
@@ -41,6 +27,21 @@ class SearchViewModelTest {
         //Then
         assertThat(viewModel.queryState).isEqualTo(expected)
     }
+
+    @Test
+    fun `initial state is the default one`() {
+        //Given
+        val expected = SearchScreenState()
+        //Then
+        assertThat(viewModel.uiState.value).isEqualTo(expected)
+    }
+
+    //Zero
+    //One
+    //Many
+    //Boundary
+    //Interface
+    //Exception
 
     @Test
     fun `when search success and no Movies are received`() {
