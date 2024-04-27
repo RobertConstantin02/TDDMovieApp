@@ -1,4 +1,4 @@
-package com.example.tddmovieapp.presentation.search.test_doubles
+package com.example.tddmovieapp.domain.test_doubles
 
 import com.example.tddmovieapp.domain.model.DomainSearchError
 import com.example.tddmovieapp.domain.usecase.SearchMoviesUseCase

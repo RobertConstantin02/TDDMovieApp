@@ -3,8 +3,8 @@ package com.example.tddmovieapp.presentation.search
 import com.example.tddmovieapp.presentation.feature.search.SearchError
 import com.example.tddmovieapp.presentation.feature.search.SearchScreenEvent
 import com.example.tddmovieapp.presentation.feature.search.SearchScreenViewModel
-import com.example.tddmovieapp.presentation.search.test_doubles.SearchMoviesUseCaseImplConnectivityErrorStub
-import com.example.tddmovieapp.presentation.search.test_doubles.SearchMoviesUseCaseImplServerErrorStub
+import com.example.tddmovieapp.domain.test_doubles.SearchMoviesUseCaseImplConnectivityErrorStub
+import com.example.tddmovieapp.domain.test_doubles.SearchMoviesUseCaseImplServerErrorStub
 import com.google.common.truth.Truth.assertThat
 import org.junit.jupiter.api.Test
 

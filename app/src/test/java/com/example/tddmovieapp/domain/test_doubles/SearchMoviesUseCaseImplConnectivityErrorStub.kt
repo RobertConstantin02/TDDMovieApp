@@ -1,16 +1,16 @@
-package com.example.tddmovieapp.presentation.search.test_doubles
+package com.example.tddmovieapp.domain.test_doubles
 
 import com.example.tddmovieapp.domain.model.DomainSearchError
 import com.example.tddmovieapp.domain.usecase.SearchMoviesUseCase
 import com.example.tddmovieapp.presentation.model.MovieVO
 
-class SearchMoviesUseCaseImplServerErrorStub: SearchMoviesUseCase() {
+class SearchMoviesUseCaseImplConnectivityErrorStub : SearchMoviesUseCase() {
     override fun invoke(
         query: String,
         success: (listMovies: List<MovieVO>) -> Unit,
         empty: () -> Unit,
         error: (DomainSearchError) -> Unit
     ) {
-        error(DomainSearchError.ServerError)
+        error(DomainSearchError.ConnectivityError)
     }
 }

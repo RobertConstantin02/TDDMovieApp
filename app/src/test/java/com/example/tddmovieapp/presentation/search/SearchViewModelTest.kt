@@ -3,7 +3,7 @@ package com.example.tddmovieapp.presentation.search
 import com.example.tddmovieapp.presentation.feature.search.SearchScreenEvent
 import com.example.tddmovieapp.presentation.feature.search.SearchScreenState
 import com.example.tddmovieapp.presentation.feature.search.SearchScreenViewModel
-import com.example.tddmovieapp.presentation.search.test_doubles.SearchMoviesUseCaseImplSuccessStub
+import com.example.tddmovieapp.domain.test_doubles.SearchMoviesUseCaseImplSuccessStub
 import com.example.tddmovieapp.presentation.model.MovieVO
 import com.google.common.truth.Truth.assertThat
 import org.junit.jupiter.api.BeforeEach
@@ -73,12 +73,12 @@ class SearchViewModelTest {
             MovieVO(4532, "Marvel: Avangers", 4.1, "imageUrl1"),
             MovieVO(5675, "Marvel: Black Panther", 5.0, "imageUrl2")
         )
+        val expectedState = SearchScreenState().copy(isLoading = false,  isEmpty = false, success = movieListWithManyItems)
 
         val input = "Marvel"
         viewModel.onEvent(SearchScreenEvent.OnUpdateQuery(input))
         viewModel.onEvent(SearchScreenEvent.OnSearchMovies)
 
-        val expectedState = SearchScreenState().copy(isLoading = false,  isEmpty = false, success = movieListWithManyItems)
         assertThat(viewModel.uiState.value).isEqualTo(expectedState)
     }
 }
