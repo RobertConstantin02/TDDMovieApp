@@ -3,7 +3,7 @@ package com.example.tddmovieapp.presentation.search
 import com.example.tddmovieapp.presentation.feature.search.SearchScreenEvent
 import com.example.tddmovieapp.presentation.feature.search.SearchScreenState
 import com.example.tddmovieapp.presentation.feature.search.SearchScreenViewModel
-import com.example.tddmovieapp.presentation.feature.search.test_doubles.SearchMoviesUseCaseImplSuccessStub
+import com.example.tddmovieapp.presentation.search.test_doubles.SearchMoviesUseCaseImplSuccessStub
 import com.example.tddmovieapp.presentation.model.MovieVO
 import com.google.common.truth.Truth.assertThat
 import org.junit.jupiter.api.BeforeEach

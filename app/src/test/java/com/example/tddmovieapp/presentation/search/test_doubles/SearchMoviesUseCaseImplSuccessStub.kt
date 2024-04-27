@@ -1,5 +1,6 @@
-package com.example.tddmovieapp.presentation.feature.search.test_doubles
+package com.example.tddmovieapp.presentation.search.test_doubles
 
+import com.example.tddmovieapp.domain.model.DomainSearchError
 import com.example.tddmovieapp.domain.usecase.SearchMoviesUseCase
 import com.example.tddmovieapp.presentation.model.MovieVO
 
@@ -7,7 +8,8 @@ class SearchMoviesUseCaseImplSuccessStub : SearchMoviesUseCase() {
     override operator fun invoke(
         query: String,
         success: (listMovies: List<MovieVO>) -> Unit,
-        empty: () -> Unit
+        empty: () -> Unit,
+        error: (DomainSearchError) -> Unit
     ) {
         val movies = listOf(
             MovieVO(131, "Iron Man", 4.5, "imageUrl"),

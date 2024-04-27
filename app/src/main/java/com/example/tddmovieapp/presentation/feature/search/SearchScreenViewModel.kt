@@ -3,7 +3,9 @@ package com.example.tddmovieapp.presentation.feature.search
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import com.example.tddmovieapp.domain.model.DomainSearchError
 import com.example.tddmovieapp.domain.usecase.SearchMoviesUseCase
+import com.example.tddmovieapp.presentation.mapper.toErrorVo
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -36,7 +38,13 @@ class SearchScreenViewModel(private val searchMoviesUseCaseStub: SearchMoviesUse
                 _uiState.update { state ->
                     state.copy(isLoading = false, isEmpty = true)
                 }
+            },
+            error = { error ->
+                _uiState.update { state ->
+                    state.copy(isLoading = false, isEmpty = true, success = null, error = error.toErrorVo())
+                }
             }
         )
     }
 }
+
