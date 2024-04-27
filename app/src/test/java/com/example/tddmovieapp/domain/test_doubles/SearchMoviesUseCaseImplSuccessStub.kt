@@ -1,6 +1,6 @@
 package com.example.tddmovieapp.domain.test_doubles
 
-import com.example.tddmovieapp.domain.model.DomainSearchError
+import com.example.tddmovieapp.domain.model.DomainError
 import com.example.tddmovieapp.domain.usecase.SearchMoviesUseCase
 import com.example.tddmovieapp.presentation.model.MovieVO
 
@@ -9,7 +9,7 @@ class SearchMoviesUseCaseImplSuccessStub : SearchMoviesUseCase() {
         query: String,
         success: (listMovies: List<MovieVO>) -> Unit,
         empty: () -> Unit,
-        error: (DomainSearchError) -> Unit
+        error: (DomainError) -> Unit
     ) {
         val movies = listOf(
             MovieVO(131, "Iron Man", 4.5, "imageUrl"),

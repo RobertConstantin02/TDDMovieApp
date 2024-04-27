@@ -3,7 +3,6 @@ package com.example.tddmovieapp.presentation.feature.search
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import com.example.tddmovieapp.domain.model.DomainSearchError
 import com.example.tddmovieapp.domain.usecase.SearchMoviesUseCase
 import com.example.tddmovieapp.presentation.mapper.toErrorVo
 import kotlinx.coroutines.flow.MutableStateFlow
