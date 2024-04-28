@@ -4,8 +4,7 @@ import java.util.regex.Pattern
 
 class QueryValidator {
     fun validate(query: String): Boolean {
-        return if (query.trim().length <= 3 || containsSpecialCharacters(query)) false
-        else true
+        return !(query.trim().length <= 3 || containsSpecialCharacters(query))
     }
 
     private fun containsSpecialCharacters(query: String): Boolean {
