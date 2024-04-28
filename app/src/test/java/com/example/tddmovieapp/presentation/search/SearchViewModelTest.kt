@@ -19,7 +19,9 @@ class SearchViewModelTest {
 
     @BeforeEach
     fun setUp() {
-        viewModel = SearchScreenViewModel(SearchMoviesUseCaseImplSuccessStub())
+        viewModel = SearchScreenViewModel(SearchMoviesUseCaseImplSuccessStub(
+            DomainResource.success(emptyList())
+        ))
     }
 
     @Test
