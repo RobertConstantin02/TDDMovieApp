@@ -9,7 +9,7 @@ class QueryValidator {
     }
 
     private fun containsSpecialCharacters(query: String): Boolean {
-        val regexSpecialCharacters = "[<({\\^\\-=!|$})?.*+\\[\\]>/]"
+        val regexSpecialCharacters = "[<({\\-=!|$})?.*+\\[\\]>/]"
         val pattern = Pattern.compile(regexSpecialCharacters)
         return pattern.matcher(query).find()
     }

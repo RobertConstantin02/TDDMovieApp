@@ -2,7 +2,6 @@ package com.example.tddmovieapp.presentation
 
 import com.example.tddmovieapp.presentation.feature.util.QueryValidator
 import com.google.common.truth.Truth.assertThat
-import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.CsvSource
 
