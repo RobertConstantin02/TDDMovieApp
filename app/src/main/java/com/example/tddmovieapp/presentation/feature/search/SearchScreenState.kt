@@ -7,13 +7,8 @@ data class SearchScreenState(
     val isEmpty: Boolean = false,
     val error: SearchError? = null,
     val success: List<MovieVO>? = null,
-    val queryFormatError: QueryFormatError? = null
+    val isQueryFormatError: Boolean = false
 )
-
-sealed class QueryFormatError {
-    object ShortQuery: QueryFormatError()
-    object BadQuery: QueryFormatError()
-}
 
 sealed class SearchError {
     object ServerError: SearchError()

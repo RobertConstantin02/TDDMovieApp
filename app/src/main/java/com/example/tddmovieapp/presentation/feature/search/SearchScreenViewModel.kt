@@ -3,17 +3,19 @@ package com.example.tddmovieapp.presentation.feature.search
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import com.example.tddmovieapp.domain.model.MovieBo
 import com.example.tddmovieapp.domain.usecase.SearchMoviesUseCase
+import com.example.tddmovieapp.presentation.feature.util.QueryValidator
 import com.example.tddmovieapp.presentation.mapper.toErrorVo
 import com.example.tddmovieapp.presentation.mapper.toMovieVo
-import com.example.tddmovieapp.presentation.model.MovieVO
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
-class SearchScreenViewModel(private val searchMoviesUseCaseStub: SearchMoviesUseCase) {
+class SearchScreenViewModel(
+    private val searchMoviesUseCaseStub: SearchMoviesUseCase,
+    private val queryValidator: QueryValidator
+) {
 
     private val _uiState = MutableStateFlow(SearchScreenState())
     val uiState: StateFlow<SearchScreenState> = _uiState.asStateFlow()
@@ -28,25 +30,31 @@ class SearchScreenViewModel(private val searchMoviesUseCaseStub: SearchMoviesUse
         }
     }
 
-    fun search(input: String) {
-        searchMoviesUseCaseStub.invoke(
-            input,
-            success = { searchedMovies ->
-                _uiState.update { state ->
-                    state.copy(isLoading = false, isEmpty = false, success = searchedMovies.map { it.toMovieVo() })
+    private fun search(input: String) {
+        if (queryValidator.validate(queryState)) {
+            searchMoviesUseCaseStub.invoke(
+                input,
+                success = { searchedMovies ->
+                    _uiState.update { state ->
+                        state.copy(isLoading = false, isEmpty = false, success = searchedMovies.map { it.toMovieVo() })
+                    }
+                },
+                empty = {
+                    _uiState.update { state ->
+                        state.copy(isLoading = false, isEmpty = true)
+                    }
+                },
+                error = { error ->
+                    _uiState.update { state ->
+                        state.copy(isLoading = false, isEmpty = true, success = null, error = error.toErrorVo())
+                    }
                 }
-            },
-            empty = {
-                _uiState.update { state ->
-                    state.copy(isLoading = false, isEmpty = true)
-                }
-            },
-            error = { error ->
-                _uiState.update { state ->
-                    state.copy(isLoading = false, isEmpty = true, success = null, error = error.toErrorVo())
-                }
+            )
+        } else {
+            _uiState.update { state ->
+                state.copy(isQueryFormatError = true)
             }
-        )
+        }
     }
 }
 

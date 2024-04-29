@@ -6,20 +6,25 @@ import com.example.tddmovieapp.presentation.feature.search.SearchScreenEvent
 import com.example.tddmovieapp.presentation.feature.search.SearchScreenState
 import com.example.tddmovieapp.presentation.feature.search.SearchScreenViewModel
 import com.example.tddmovieapp.domain.test_doubles.SearchMoviesUseCaseImplSuccessFake
+import com.example.tddmovieapp.presentation.feature.util.QueryValidator
 import com.example.tddmovieapp.presentation.mapper.toMovieVo
 import com.google.common.truth.Truth.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.CsvSource
 
-class SearchViewModelTest {
+class SearchViewModelSuccessTest {
 
     private lateinit var viewModel: SearchScreenViewModel
 
     @BeforeEach
     fun setUp() {
-        viewModel = SearchScreenViewModel(SearchMoviesUseCaseImplSuccessFake(
-            DomainResource.success(emptyList())
-        ))
+        viewModel = SearchScreenViewModel(
+            SearchMoviesUseCaseImplSuccessFake(
+                DomainResource.success(emptyList())
+            ), QueryValidator()
+        )
     }
 
     @Test
@@ -52,10 +57,12 @@ class SearchViewModelTest {
         //Given
         val expectedState = SearchScreenState().copy(isLoading = false, isEmpty = true)
         val input = "not existing movie"
-        viewModel = SearchScreenViewModel(SearchMoviesUseCaseImplSuccessFake(
-            DomainResource.success(emptyList())
+        viewModel = SearchScreenViewModel(
+            SearchMoviesUseCaseImplSuccessFake(
+                DomainResource.success(emptyList())
 
-        ))
+            ), QueryValidator()
+        )
         //When
         viewModel.onEvent(SearchScreenEvent.OnUpdateQuery(input))
         viewModel.onEvent(SearchScreenEvent.OnSearchMovies)
@@ -67,9 +74,11 @@ class SearchViewModelTest {
     fun `when search success and one Movie received`() {
         val movieListWithSingleItem = listOf<MovieBo>(MovieBo(131, "Iron Man", 4.5, "imageUrl"))
         val expectedState = SearchScreenState().copy(isLoading = false,  isEmpty = false, success = movieListWithSingleItem.map { it.toMovieVo() })
-        viewModel = SearchScreenViewModel(SearchMoviesUseCaseImplSuccessFake(
-            DomainResource.success(movieListWithSingleItem)
-        ))
+        viewModel = SearchScreenViewModel(
+            SearchMoviesUseCaseImplSuccessFake(
+                DomainResource.success(movieListWithSingleItem)
+            ), QueryValidator()
+        )
         val input = "iron"
 
         viewModel.onEvent(SearchScreenEvent.OnUpdateQuery(input))
@@ -86,8 +95,8 @@ class SearchViewModelTest {
         )
         val expectedState = SearchScreenState().copy(isLoading = false,  isEmpty = false, success = movieListWithManyItems.map { it.toMovieVo() })
         viewModel = SearchScreenViewModel(SearchMoviesUseCaseImplSuccessFake(
-            DomainResource.success(movieListWithManyItems)
-        ))
+            DomainResource.success(movieListWithManyItems),
+        ), QueryValidator())
 
         val input = "Marvel"
         viewModel.onEvent(SearchScreenEvent.OnUpdateQuery(input))
