@@ -59,7 +59,9 @@ class SearchViewModelErrorTest {
     @CsvSource(
         "'mar-vel', true",
         "'[marvel]', true",
-        "'*marvel', true"
+        "'*marvel', true",
+        "'', true",
+        "'   ', true"
     )
     fun `given a query with les than 3 characters, when search, then isBadFormatQuery true`(
         query: String, isQueryFormatError: Boolean
