@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import com.example.tddmovieapp.domain.usecase.SearchMoviesUseCase
 import com.example.tddmovieapp.presentation.feature.util.QueryValidator
+import com.example.tddmovieapp.presentation.feature.util.Validator
 import com.example.tddmovieapp.presentation.mapper.toErrorVo
 import com.example.tddmovieapp.presentation.mapper.toMovieVo
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -14,7 +15,7 @@ import kotlinx.coroutines.flow.update
 
 class SearchScreenViewModel(
     private val searchMoviesUseCaseStub: SearchMoviesUseCase,
-    private val queryValidator: QueryValidator
+    private val queryValidator: Validator<String>
 ) {
 
     private val _uiState = MutableStateFlow(SearchScreenState())
@@ -46,7 +47,7 @@ class SearchScreenViewModel(
                 },
                 error = { error ->
                     _uiState.update { state ->
-                        state.copy(isLoading = false, isEmpty = true, success = null, error = error.toErrorVo())
+                        state.copy(isLoading = false, isEmpty = true, error = error.toErrorVo())
                     }
                 }
             )

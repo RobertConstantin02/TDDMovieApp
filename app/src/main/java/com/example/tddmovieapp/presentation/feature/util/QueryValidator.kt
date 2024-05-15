@@ -2,8 +2,9 @@ package com.example.tddmovieapp.presentation.feature.util
 
 import java.util.regex.Pattern
 
-class QueryValidator {
-    fun validate(query: String): Boolean {
+class QueryValidator: Validator<String> {
+
+    override fun validate(query: String): Boolean {
         return !(query.trim().length <= 3 || containsSpecialCharacters(query))
     }
 
