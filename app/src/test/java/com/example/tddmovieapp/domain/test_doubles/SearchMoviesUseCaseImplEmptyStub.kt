@@ -6,7 +6,7 @@ import com.example.tddmovieapp.domain.usecase.SearchMoviesUseCase
 
 class SearchMoviesUseCaseImplEmptyStub : SearchMoviesUseCase() {
 
-    override fun invoke(
+    override suspend fun invoke(
         query: String,
         success: (listMovies: List<MovieBo>) -> Unit,
         empty: () -> Unit,

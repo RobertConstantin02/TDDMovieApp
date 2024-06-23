@@ -5,7 +5,7 @@ import com.example.tddmovieapp.domain.model.MovieBo
 import com.example.tddmovieapp.presentation.model.MovieVO
 
 abstract class SearchMoviesUseCase {
-    abstract operator fun invoke(
+    abstract suspend operator fun invoke(
         query: String,
         success: (listMovies: List<MovieBo>) -> Unit,
         empty: () -> Unit,

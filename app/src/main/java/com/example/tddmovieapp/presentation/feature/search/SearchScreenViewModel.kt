@@ -3,20 +3,25 @@ package com.example.tddmovieapp.presentation.feature.search
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.tddmovieapp.domain.usecase.SearchMoviesUseCase
-import com.example.tddmovieapp.presentation.feature.util.QueryValidator
 import com.example.tddmovieapp.presentation.feature.util.Validator
 import com.example.tddmovieapp.presentation.mapper.toErrorVo
 import com.example.tddmovieapp.presentation.mapper.toMovieVo
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class SearchScreenViewModel(
     private val searchMoviesUseCaseStub: SearchMoviesUseCase,
-    private val queryValidator: Validator<String>
-) {
+    private val queryValidator: Validator<String>,
+    private val backgroundDispatcher: CoroutineDispatcher
+) : ViewModel() {
 
     private val _uiState = MutableStateFlow(SearchScreenState())
     val uiState: StateFlow<SearchScreenState> = _uiState.asStateFlow()
@@ -33,24 +38,35 @@ class SearchScreenViewModel(
 
     private fun search(input: String) {
         if (queryValidator.validate(queryState)) {
-            searchMoviesUseCaseStub.invoke(
-                input,
-                success = { searchedMovies ->
-                    _uiState.update { state ->
-                        state.copy(isLoading = false, isEmpty = false, success = searchedMovies.map { it.toMovieVo() })
-                    }
-                },
-                empty = {
-                    _uiState.update { state ->
-                        state.copy(isLoading = false, isEmpty = true)
-                    }
-                },
-                error = { error ->
-                    _uiState.update { state ->
-                        state.copy(isLoading = false, isEmpty = true, error = error.toErrorVo())
-                    }
+            viewModelScope.launch {
+                withContext(backgroundDispatcher) {
+                    searchMoviesUseCaseStub.invoke(
+                        input,
+                        success = { searchedMovies ->
+                            _uiState.update { state ->
+                                state.copy(
+                                    isLoading = false,
+                                    isEmpty = false,
+                                    success = searchedMovies.map { it.toMovieVo() })
+                            }
+                        },
+                        empty = {
+                            _uiState.update { state ->
+                                state.copy(isLoading = false, isEmpty = true)
+                            }
+                        },
+                        error = { error ->
+                            _uiState.update { state ->
+                                state.copy(
+                                    isLoading = false,
+                                    isEmpty = true,
+                                    error = error.toErrorVo()
+                                )
+                            }
+                        }
+                    )
                 }
-            )
+            }
         } else {
             _uiState.update { state ->
                 state.copy(isQueryFormatError = true)

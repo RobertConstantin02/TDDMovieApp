@@ -11,7 +11,7 @@ class SearchMoviesUseCaseImplSuccessFake(
 ) : SearchMoviesUseCase() {
     private var domainError: DomainError? = null
 
-    override operator fun invoke(
+    override suspend operator fun invoke(
         query: String,
         success: (listMovies: List<MovieBo>) -> Unit,
         empty: () -> Unit,

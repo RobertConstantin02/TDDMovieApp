@@ -5,7 +5,7 @@ import com.example.tddmovieapp.domain.model.MovieBo
 import com.example.tddmovieapp.domain.usecase.SearchMoviesUseCase
 
 class SearchMoviesUseCaseImplServerErrorStub: SearchMoviesUseCase() {
-    override fun invoke(
+    override suspend fun invoke(
         query: String,
         success: (listMovies: List<MovieBo>) -> Unit,
         empty: () -> Unit,

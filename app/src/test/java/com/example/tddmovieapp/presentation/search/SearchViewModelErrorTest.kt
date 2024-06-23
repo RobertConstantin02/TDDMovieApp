@@ -10,25 +10,32 @@ import com.example.tddmovieapp.domain.test_doubles.SearchMoviesUseCaseImplConnec
 import com.example.tddmovieapp.domain.test_doubles.SearchMoviesUseCaseImplServerErrorStub
 import com.example.tddmovieapp.domain.test_doubles.SearchMoviesUseCaseImplSuccessFake
 import com.example.tddmovieapp.presentation.feature.search.SearchScreenState
-import com.example.tddmovieapp.presentation.feature.util.QueryValidator
 import com.example.tddmovieapp.presentation.feature.util.Validator
 import com.example.tddmovieapp.presentation.mapper.toMovieVo
+import com.example.tddmovieapp.util.CoroutineExtension
 import com.example.tddmovieapp.util.observeFlow
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.CsvSource
 
+@ExtendWith(CoroutineExtension::class)
+@OptIn(ExperimentalCoroutinesApi::class)
 class SearchViewModelErrorTest {
+
+    private val backgroundTestDispatcher = UnconfinedTestDispatcher()
 
     @Test
     fun `when search and server error`() {
         //Given
         val viewModel = SearchScreenViewModel(
             SearchMoviesUseCaseImplServerErrorStub(),
-            QueryValidatorFake()
+            QueryValidatorFake(),
+            backgroundTestDispatcher
         )
         //When
         viewModel.onEvent(SearchScreenEvent.OnSearchMovies)
@@ -42,7 +49,8 @@ class SearchViewModelErrorTest {
         //Given
         val viewModel = SearchScreenViewModel(
             SearchMoviesUseCaseImplConnectivityErrorStub(),
-            QueryValidatorFake()
+            QueryValidatorFake(),
+            backgroundTestDispatcher
         )
         //When
         viewModel.onEvent(SearchScreenEvent.OnSearchMovies)
@@ -75,9 +83,11 @@ class SearchViewModelErrorTest {
         val viewModel = SearchScreenViewModel(
             SearchMoviesUseCaseImplSuccessFake(
                 DomainResource.success(movieListWithManyItems)
-            ), QueryValidatorFake().also {
+            ),
+            QueryValidatorFake().also {
                 it.isValidQuery = isQueryFormatError
-            }
+            },
+            backgroundTestDispatcher
         )
         //When
         viewModel.onEvent(SearchScreenEvent.OnUpdateQuery(query))
@@ -103,11 +113,14 @@ class SearchViewModelErrorTest {
             val viewModel = SearchScreenViewModel(
                 SearchMoviesUseCaseImplSuccessFake(
                     DomainResource.success(movieListWithManyItems)
-                ), queryValidator
+                ),
+                queryValidator,
+                backgroundTestDispatcher
             )
 
             val deliveredState = observeFlow(viewModel.uiState, true) {
                 //first search with proper query
+                viewModel.onEvent(SearchScreenEvent.OnUpdateQuery("marvel"))
                 viewModel.onEvent(SearchScreenEvent.OnSearchMovies)
                 //second search with bad query
                 queryValidator.isValidQuery = false
@@ -136,37 +149,43 @@ class SearchViewModelErrorTest {
     }
 
     @Test
-    fun `given connectivity error after success search, error is of type ConnectivityError and data available`() = runTest {
-        //Given
-        val movieListWithManyItems = listOf<MovieBo>(
-            MovieBo(4532, "Marvel: Avangers", 4.1, "imageUrl1"),
-            MovieBo(5675, "Marvel: Black Panther", 5.0, "imageUrl2")
-        )
+    fun `given connectivity error after success search, error is of type ConnectivityError and data available`() =
+        runTest {
+            //Given
+            val movieListWithManyItems = listOf<MovieBo>(
+                MovieBo(4532, "Marvel: Avangers", 4.1, "imageUrl1"),
+                MovieBo(5675, "Marvel: Black Panther", 5.0, "imageUrl2")
+            )
 
-        val searchMoviesUeCase = SearchMoviesUseCaseImplSuccessFake(
-            DomainResource.success(movieListWithManyItems)
-        )
+            val searchMoviesUeCase = SearchMoviesUseCaseImplSuccessFake(
+                DomainResource.success(movieListWithManyItems)
+            )
 
-        val viewModel = SearchScreenViewModel(searchMoviesUeCase, QueryValidatorFake())
+            val viewModel = SearchScreenViewModel(
+                searchMoviesUeCase,
+                QueryValidatorFake(),
+                backgroundTestDispatcher
+            )
 
-        //When
-        val deliveredState = observeFlow(viewModel.uiState, true) {
-            //First successful search
-            viewModel.onEvent(SearchScreenEvent.OnSearchMovies)
-            //connectivity error happens
-            searchMoviesUeCase.setError(DomainError.ConnectivityError)
-            viewModel.onEvent(SearchScreenEvent.OnSearchMovies)
+            //When
+            val deliveredState = observeFlow(viewModel.uiState, true) {
+                //First successful search
+                viewModel.onEvent(SearchScreenEvent.OnUpdateQuery("marvel"))
+                viewModel.onEvent(SearchScreenEvent.OnSearchMovies)
+                //connectivity error happens
+                searchMoviesUeCase.setError(DomainError.ConnectivityError)
+                viewModel.onEvent(SearchScreenEvent.OnSearchMovies)
+            }
+
+            val state1 = deliveredState[0]
+            val state2 = deliveredState[1]
+            //Then
+            assertThat(state1.success).isEqualTo(movieListWithManyItems.map { it.toMovieVo() })
+            assertThat(state2.error).isInstanceOf(SearchError.ConnectivityError::class.java)
+            assertThat(state2.success).isEqualTo(movieListWithManyItems.map { it.toMovieVo() })
         }
 
-        val state1 = deliveredState[0]
-        val state2 = deliveredState[1]
-        //Then
-        assertThat(state1.success).isEqualTo(movieListWithManyItems.map { it.toMovieVo() })
-        assertThat(state2.error).isInstanceOf(SearchError.ConnectivityError::class.java)
-        assertThat(state2.success).isEqualTo(movieListWithManyItems.map { it.toMovieVo() })
-    }
-
-    class QueryValidatorFake: Validator<String> {
+    class QueryValidatorFake : Validator<String> {
         var isValidQuery: Boolean = true
         override fun validate(data: String): Boolean {
             return isValidQuery
