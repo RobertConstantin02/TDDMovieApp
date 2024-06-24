@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test
 /**
  * This contract test encapsulates the data, test and abstract functions.
  */
-abstract class MoviesRepositoryContract {
+abstract class MoviesRepositoryContractTest {
 
     private val movieList = listOf(
         MovieBo(4532, "Marvel: Avangers", 4.1, "imageUrl1"),

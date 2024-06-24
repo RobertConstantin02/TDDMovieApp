@@ -2,11 +2,8 @@ package com.example.tddmovieapp.data.repository
 
 import com.example.tddmovieapp.data.test_doubles.MoviesRepositoryFake
 import com.example.tddmovieapp.domain.model.DomainError
-import com.example.tddmovieapp.domain.model.DomainResource
 import com.example.tddmovieapp.domain.model.MovieBo
 import com.example.tddmovieapp.domain.repository.IMoviesRepository
-import com.google.common.truth.Truth.assertThat
-import org.junit.jupiter.api.Test
 
 /**
  * Here we took the fake and we wrote test for it. And from those test we extract a contract
@@ -15,7 +12,7 @@ import org.junit.jupiter.api.Test
  * only supply an instance of the repository that will be needed in each case.
  *
  */
-class MoviesRepositoryFakeTest : MoviesRepositoryContract() {
+class MoviesRepositoryFakeTestTest : MoviesRepositoryContractTest() {
     override fun searchMoviesWithError(error: DomainError): IMoviesRepository =
         MoviesRepositoryFake(null, error)
 
