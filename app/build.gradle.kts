@@ -71,6 +71,7 @@ dependencies {
     implementation(libs.compose.ui.tooling)
     implementation(libs.coil.compose)
     implementation(libs.network.retrofit.converter.gson)
+    implementation(libs.bundles.retrofit)
 
     kapt(libs.hilt.compiler)
 
