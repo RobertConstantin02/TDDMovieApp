@@ -13,8 +13,8 @@ import com.example.tddmovieapp.domain.repository.IMoviesRepository
  *
  */
 class MoviesRepositoryFakeTestTest : MoviesRepositoryContractTest() {
-    override fun searchMoviesWithError(error: DomainError): IMoviesRepository =
-        MoviesRepositoryFake(null, error)
+    override fun searchMoviesWithError(): IMoviesRepository =
+        MoviesRepositoryFake(null, DomainError.ServerError)
 
     override fun searchMoviesSuccess(movieList: List<MovieBo>): IMoviesRepository =
         MoviesRepositoryFake(movieList)

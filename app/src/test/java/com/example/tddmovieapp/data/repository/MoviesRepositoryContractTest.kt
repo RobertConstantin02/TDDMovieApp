@@ -23,7 +23,7 @@ abstract class MoviesRepositoryContractTest {
         //Given
         val query = "marvel"
         val expected = DomainResource.success(movieList)
-        val repository = searchMoviesSuccess(movieList) //here change for searchMoviesWith
+        val repository = searchMoviesSuccess(movieList)
         //When
         val result = repository.searchMovies(query)
         //Then
@@ -45,11 +45,11 @@ abstract class MoviesRepositoryContractTest {
     }
 
     @Test
-    fun `repository returns error`() = runTest {
+    fun `repository returns service error`() = runTest {
         //Given
         val query = "marvel"
         val expected = DomainResource.error(DomainError.ServerError)
-        val repository = searchMoviesWithError(DomainError.ServerError)
+        val repository = searchMoviesWithError()
         //When
         val result = repository.searchMovies(query)
         //Then
@@ -57,7 +57,7 @@ abstract class MoviesRepositoryContractTest {
         assertThat((result as DomainResource.Error).error).isInstanceOf(DomainError.ServerError::class.java)
     }
 
-    abstract fun searchMoviesWithError(error: DomainError): IMoviesRepository
+    abstract fun searchMoviesWithError(): IMoviesRepository
 
     abstract fun searchMoviesSuccess(movieList: List<MovieBo>): IMoviesRepository
 }

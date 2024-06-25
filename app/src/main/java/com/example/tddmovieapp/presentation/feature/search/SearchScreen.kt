@@ -73,7 +73,7 @@ fun SearchScreenContent(
             modifier = modifier.semantics { contentDescription = lazyColumnContentDescription }
         ) {
             items(moviesItems) {
-                MovieItem(onItemClick = {}, imageUrl = it.image, it.title)
+                MovieItem(onItemClick = {}, imageUrl = it.image.orEmpty(), it.title.orEmpty())
             }
         }
     }

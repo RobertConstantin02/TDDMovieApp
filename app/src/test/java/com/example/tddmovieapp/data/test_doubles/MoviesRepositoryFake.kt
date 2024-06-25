@@ -21,7 +21,7 @@ class MoviesRepositoryFake(
 ) : IMoviesRepository {
     override suspend fun searchMovies(query: String): DomainResource<List<MovieBo>> {
         error?.let { return DomainResource.error(it) }
-        val filteredMovies = listMovies?.filter { movie -> movie.title.contains(query, true) }
+        val filteredMovies = listMovies?.filter { movie -> movie.title?.contains(query, true) == true }
         return if (filteredMovies?.isNotEmpty() == true) DomainResource.success(filteredMovies)
         else DomainResource.success(emptyList())
     }

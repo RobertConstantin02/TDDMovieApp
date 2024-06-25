@@ -9,6 +9,7 @@ fun DomainError.toErrorVo(): SearchError =
     when(this) {
         is DomainError.ServerError -> SearchError.ServerError
         is DomainError.ConnectivityError -> SearchError.ConnectivityError
+        else -> SearchError.UnknownError
     }
 
 fun MovieBo.toMovieVo() = MovieVO(id, title, popularity, image)

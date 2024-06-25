@@ -70,6 +70,7 @@ dependencies {
     implementation(libs.compose.preview)
     implementation(libs.compose.ui.tooling)
     implementation(libs.coil.compose)
+    implementation(libs.network.retrofit.converter.gson)
 
     kapt(libs.hilt.compiler)
 
