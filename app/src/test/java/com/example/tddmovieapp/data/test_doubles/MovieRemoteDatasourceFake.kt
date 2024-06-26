@@ -7,6 +7,6 @@ class MovieRemoteDatasourceFake(
     private val movieList: List<MovieSearchDto.MovieDto>?,
     private val movieException: Throwable?
 ) : IMoviesRemoteDataSource {
-    override fun getMovies(): List<MovieSearchDto.MovieDto> =
+    override fun getMovies(query: String): List<MovieSearchDto.MovieDto> =
         movieList ?: throw movieException ?: Throwable()
 }

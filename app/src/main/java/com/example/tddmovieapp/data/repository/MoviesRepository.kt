@@ -11,7 +11,7 @@ import com.example.tddmovieapp.domain.repository.IMoviesRepository
 class MoviesRepository(private val moviesDataSource: IMoviesRemoteDataSource) : IMoviesRepository {
     override suspend fun searchMovies(query: String): DomainResource<List<MovieBo>> =
         try {
-            val result = moviesDataSource.getMovies().map { it.toMovieBo() }
+            val result = moviesDataSource.getMovies(query).map { it.toMovieBo() }
             if (result.isNotEmpty()) DomainResource.success(result)
             else DomainResource.success(emptyList())
         } catch (e: Exception) {
