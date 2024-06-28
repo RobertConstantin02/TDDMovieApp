@@ -6,7 +6,7 @@ import com.example.tddmovieapp.data.service.MoviesService
 import com.example.tddmovieapp.util.FileUtil
 import com.example.tddmovieapp.util.MOVIES_FIRST_PAGE_JSON
 import com.example.tddmovieapp.util.MovieUtil
-import com.example.tddmovieapp.util.toRickAndMortyService
+import com.example.tddmovieapp.util.toMoviesService
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import okio.IOException
@@ -25,7 +25,7 @@ class MoviesRemoteDataSourceTest: MoviesRemoteDataSourceContractTest() {
     fun setUp() {
         mockWebserver = MockWebServer()
         mockWebserver.start()
-        service = mockWebserver.toRickAndMortyService()
+        service = mockWebserver.toMoviesService()
         datasource = MoviesRemoteDatasource(service)
     }
 
@@ -57,7 +57,7 @@ class MoviesRemoteDataSourceTest: MoviesRemoteDataSourceContractTest() {
 }
 
 class MoviesRemoteDatasource(private val api: MoviesService): IMoviesRemoteDataSource {
-    override fun getMovies(query: String): List<MovieSearchDto.MovieDto> {
+    override suspend fun getMovies(query: String): List<MovieSearchDto.MovieDto> {
         try {
             val result = api.getMovies(query)
             return if (result.isSuccessful && result.body() != null)  result.body()!!.results

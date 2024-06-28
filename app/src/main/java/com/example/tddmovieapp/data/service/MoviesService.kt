@@ -8,7 +8,7 @@ import retrofit2.http.Query
 const val BASE_API_URL = "https://api.themoviedb.org/3"
 interface MoviesService {
     @GET("search/movie")
-    fun getMovies(
+    suspend fun getMovies(
         @Query("query") query: String,
         @Query("include_adult") adult: Boolean = false
     ): Response<MovieSearchDto>

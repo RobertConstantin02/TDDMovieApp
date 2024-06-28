@@ -1,7 +1,9 @@
 package com.example.tddmovieapp.data.datasource
 
 import com.example.tddmovieapp.data.model.MovieSearchDto
+import com.example.tddmovieapp.util.MovieUtil
 import com.google.common.truth.Truth.assertThat
+import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -21,16 +23,17 @@ abstract class MoviesRemoteDataSourceContractTest {
     }
 
     @Test
-    fun `remote data source return success empty movie list`() {
+    fun `remote data source return success empty movie list`() = runTest {
+        //Given
         val remoteDataSource = successMoviesEmpty()
-        //Then
+        //When
         val result = remoteDataSource.getMovies(query)
         //Then
         assertThat(result).isEmpty()
     }
 
     @Test
-    fun `remote data source throws exception`() {
+    fun `remote data source throws exception`() = runTest {
         //Given
         val remoteDataSource = errorMovies()
         //Then

@@ -7,7 +7,7 @@ import com.example.tddmovieapp.data.di.NetworkModule.provideService
 import com.example.tddmovieapp.data.service.MoviesService
 import okhttp3.mockwebserver.MockWebServer
 
-fun MockWebServer.toRickAndMortyService(): MoviesService {
+fun MockWebServer.toMoviesService(): MoviesService {
     val retrofit = provideService(
         baseUrl = url("").toString(),
         client = provideOkHttpClient(interceptor = provideInterceptor())
