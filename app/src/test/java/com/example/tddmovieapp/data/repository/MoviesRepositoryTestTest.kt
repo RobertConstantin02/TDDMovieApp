@@ -80,7 +80,10 @@ class MoviesRepositoryTestTest : MoviesRepositoryContractTest() {
     }
 
     override fun searchMoviesSuccess(movieList: List<MovieBo>): IMoviesRepository {
-        mockWebserver.enqueue(MockResponse().setResponseCode(200).setBody(FileUtil.getJson(MOVIES_FIRST_PAGE_JSON).orEmpty()))
+        mockWebserver.enqueue(
+            MockResponse().setResponseCode(200)
+                .setBody(FileUtil.getJson(MOVIES_FIRST_PAGE_JSON).orEmpty())
+        )
         return repository
     }
 }
@@ -93,12 +96,13 @@ class MoviesRepository(private val api: MoviesService) : IMoviesRepository {
     override suspend fun searchMovies(query: String): DomainResource<List<MovieBo>> =
         try {
             val result = api.getMovies(query)
-            if (result.isSuccessful && result.body() != null) {
-                DomainResource.success(result.body()!!.results.map { it.toMovieBo() })
-            }
-            else {
-                DomainResource.success(emptyList())
-            }
+            if (result.isSuccessful) {
+                if (result.body() != null) {
+                    DomainResource.success(result.body()!!.results.map { it.toMovieBo() })
+                } else {
+                    DomainResource.success(emptyList())
+                }
+            } else throw HttpException(result)
         } catch (e: Throwable) {
             when (e) {
                 is IOException -> DomainResource.error(DomainError.ConnectivityError)
