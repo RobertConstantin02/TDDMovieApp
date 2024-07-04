@@ -1,22 +1,25 @@
 package com.example.tddmovieapp.data.repository
 
+import com.example.tddmovieapp.data.model.MovieSearchDto
 import com.example.tddmovieapp.domain.model.DomainError
 import com.example.tddmovieapp.domain.model.DomainResource
 import com.example.tddmovieapp.domain.model.MovieBo
 import com.example.tddmovieapp.domain.repository.IMoviesRepository
+import com.example.tddmovieapp.util.CoroutineExtension
 import com.google.common.truth.Truth.assertThat
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 
 /**
  * This contract test encapsulates the data, test and abstract functions.
  */
+@ExtendWith(CoroutineExtension::class)
 abstract class MoviesRepositoryContractTest {
 
-    private val movieList = listOf(
-        MovieBo(4532, "Marvel: Avangers", 4.1, "imageUrl1"),
-        MovieBo(5675, "Marvel: Black Panther", 5.0, "imageUrl2"),
-    )
+    abstract val movieList: List<MovieBo>
 
     @Test
     fun `repository returns success with movies containing query`() = runTest {
@@ -49,7 +52,7 @@ abstract class MoviesRepositoryContractTest {
         //Given
         val query = "marvel"
         val expected = DomainResource.error(DomainError.ServerError)
-        val repository = searchMoviesWithError()
+        val repository = searchMoviesWithServiceError()
         //When
         val result = repository.searchMovies(query)
         //Then
@@ -57,7 +60,21 @@ abstract class MoviesRepositoryContractTest {
         assertThat((result as DomainResource.Error).error).isInstanceOf(DomainError.ServerError::class.java)
     }
 
-    abstract fun searchMoviesWithError(): IMoviesRepository
+    @Test
+    fun `repository returns connectivity  error`() = runTest {
+        //Given
+        val query = "marvel"
+        val expected = DomainResource.error(DomainError.ConnectivityError)
+        val repository = searchMoviesWithConnectivityError()
+        //When
+        val result = repository.searchMovies(query)
+        //Then
+        assertThat(result).isInstanceOf(expected::class.java)
+        assertThat((result as DomainResource.Error).error).isInstanceOf(DomainError.ConnectivityError::class.java)
+    }
+
+    abstract fun searchMoviesWithServiceError(): IMoviesRepository
+    abstract fun searchMoviesWithConnectivityError(): IMoviesRepository
 
     abstract fun searchMoviesSuccess(movieList: List<MovieBo>): IMoviesRepository
 }

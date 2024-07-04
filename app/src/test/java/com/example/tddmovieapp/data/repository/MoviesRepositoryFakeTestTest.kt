@@ -13,8 +13,18 @@ import com.example.tddmovieapp.domain.repository.IMoviesRepository
  *
  */
 class MoviesRepositoryFakeTestTest : MoviesRepositoryContractTest() {
-    override fun searchMoviesWithError(): IMoviesRepository =
+
+    override val movieList: List<MovieBo>
+        get() = listOf(
+            MovieBo(4532, "Marvel: Avangers", 4.1, "imageUrl1"),
+            MovieBo(5675, "Marvel: Black Panther", 5.0, "imageUrl2"),
+        )
+
+    override fun searchMoviesWithServiceError(): IMoviesRepository =
         MoviesRepositoryFake(null, DomainError.ServerError)
+
+    override fun searchMoviesWithConnectivityError(): IMoviesRepository =
+        MoviesRepositoryFake(null, DomainError.ConnectivityError)
 
     override fun searchMoviesSuccess(movieList: List<MovieBo>): IMoviesRepository =
         MoviesRepositoryFake(movieList)
