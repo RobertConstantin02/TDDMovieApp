@@ -15,6 +15,7 @@ import com.example.tddmovieapp.util.FileUtil
 import com.example.tddmovieapp.util.MOVIES_FIRST_PAGE_JSON
 import com.example.tddmovieapp.util.MovieUtil
 import com.example.tddmovieapp.util.toMoviesService
+import okhttp3.ResponseBody.Companion.toResponseBody
 import okhttp3.mockwebserver.Dispatcher
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
@@ -23,6 +24,7 @@ import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.extension.ExtendWith
 import retrofit2.HttpException
+import retrofit2.Response
 import java.io.IOException
 import java.net.HttpURLConnection
 
@@ -66,17 +68,29 @@ class MoviesRepositoryTestTest : MoviesRepositoryContractTest() {
     }
 
     override fun searchMoviesWithServiceError(): IMoviesRepository {
-        mockWebserver.enqueue(MockResponse().setResponseCode(HttpURLConnection.HTTP_UNAUTHORIZED))
-        return repository
+        //mockWebserver.enqueue(MockResponse().setResponseCode(HttpURLConnection.HTTP_UNAUTHORIZED))
+        val unavailableApi = object : MoviesService {
+            override suspend fun getMovies(
+                query: String,
+                adult: Boolean
+            ): Response<MovieSearchDto> {
+                throw HttpException(Response.error<String>(400, "error".toResponseBody()))
+            }
+        }
+
+        return MoviesRepository(unavailableApi)
     }
 
     override fun searchMoviesWithConnectivityError(): IMoviesRepository {
-        mockWebserver.dispatcher = object : Dispatcher() {
-            override fun dispatch(request: RecordedRequest): MockResponse {
-                throw IOException()
+        val offlineApi = object : MoviesService {
+            override suspend fun getMovies(
+                query: String,
+                adult: Boolean
+            ): Response<MovieSearchDto> {
+                throw IOException("error")
             }
         }
-        return repository
+        return MoviesRepository(offlineApi)
     }
 
     override fun searchMoviesSuccess(movieList: List<MovieBo>): IMoviesRepository {
@@ -96,13 +110,9 @@ class MoviesRepository(private val api: MoviesService) : IMoviesRepository {
     override suspend fun searchMovies(query: String): DomainResource<List<MovieBo>> =
         try {
             val result = api.getMovies(query)
-            if (result.isSuccessful) {
-                if (result.body() != null) {
-                    DomainResource.success(result.body()!!.results.map { it.toMovieBo() })
-                } else {
-                    DomainResource.success(emptyList())
-                }
-            } else throw HttpException(result)
+            if (result.isSuccessful && result.body() != null)
+                DomainResource.success(result.body()!!.results.map { it.toMovieBo() })
+            else DomainResource.success(emptyList())
         } catch (e: Throwable) {
             when (e) {
                 is IOException -> DomainResource.error(DomainError.ConnectivityError)
