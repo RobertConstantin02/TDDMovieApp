@@ -1,5 +1,7 @@
 package com.example.tddmovieapp.data.test_doubles
 
+import com.example.tddmovieapp.data.mapper.toMovieBo
+import com.example.tddmovieapp.data.model.MovieSearchDto
 import com.example.tddmovieapp.domain.model.DomainError
 import com.example.tddmovieapp.domain.model.DomainResource
 import com.example.tddmovieapp.domain.model.MovieBo
@@ -16,13 +18,13 @@ import com.example.tddmovieapp.domain.repository.IMoviesRepository
  * that class is already used in the test of the use case.
  */
 class MoviesRepositoryFake(
-    private var listMovies: List<MovieBo>?,
+    private var listMovies: List<MovieSearchDto.MovieDto>?,
     private var error: DomainError? = null
 ) : IMoviesRepository {
     override suspend fun searchMovies(query: String): DomainResource<List<MovieBo>> {
         error?.let { return DomainResource.error(it) }
         val filteredMovies = listMovies?.filter { movie -> movie.title?.contains(query, true) == true }
-        return if (filteredMovies?.isNotEmpty() == true) DomainResource.success(filteredMovies)
+        return if (filteredMovies?.isNotEmpty() == true) DomainResource.success(filteredMovies.map { it.toMovieBo() })
         else DomainResource.success(emptyList())
     }
 }

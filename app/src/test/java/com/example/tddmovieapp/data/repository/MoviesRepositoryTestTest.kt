@@ -1,20 +1,12 @@
 package com.example.tddmovieapp.data.repository
 
-import com.example.tddmovieapp.data.datasource.MoviesRemoteDatasource
-import com.example.tddmovieapp.data.mapper.toMovieBo
-import com.example.tddmovieapp.data.model.MovieError
 import com.example.tddmovieapp.data.model.MovieSearchDto
 import com.example.tddmovieapp.data.service.MoviesService
-import com.example.tddmovieapp.data.test_doubles.MovieRemoteDatasourceFake
-import com.example.tddmovieapp.domain.model.DomainError
-import com.example.tddmovieapp.domain.model.DomainResource
-import com.example.tddmovieapp.domain.model.MovieBo
 import com.example.tddmovieapp.domain.repository.IMoviesRepository
 import com.example.tddmovieapp.util.CoroutineExtension
-import com.example.tddmovieapp.util.FileUtil
-import com.example.tddmovieapp.util.MOVIES_FIRST_PAGE_JSON
-import com.example.tddmovieapp.util.MovieUtil
 import com.example.tddmovieapp.util.toMoviesService
+import kotlinx.serialization.json.buildJsonObject
+import kotlinx.serialization.json.put
 import okhttp3.ResponseBody.Companion.toResponseBody
 import okhttp3.mockwebserver.Dispatcher
 import okhttp3.mockwebserver.MockResponse
@@ -26,7 +18,6 @@ import org.junit.jupiter.api.extension.ExtendWith
 import retrofit2.HttpException
 import retrofit2.Response
 import java.io.IOException
-import java.net.HttpURLConnection
 
 //class MoviesRepositoryTestTest : MoviesRepositoryContractTest() {
 //    override fun searchMoviesWithError(error: DomainError): IMoviesRepository {
@@ -46,20 +37,14 @@ import java.net.HttpURLConnection
 @ExtendWith(CoroutineExtension::class)
 class MoviesRepositoryTestTest : MoviesRepositoryContractTest() {
 
-
-    override val movieList: List<MovieBo>
-        get() = MovieUtil.expectedSuccessMovies.results.map { it.toMovieBo() }
-
     private lateinit var mockWebserver: MockWebServer
     private lateinit var service: MoviesService
-    private lateinit var repository: MoviesRepository
 
     @BeforeEach
     fun setUp() {
         mockWebserver = MockWebServer()
         mockWebserver.start()
         service = mockWebserver.toMoviesService()
-        repository = MoviesRepository(service)
     }
 
     @AfterEach
@@ -68,7 +53,6 @@ class MoviesRepositoryTestTest : MoviesRepositoryContractTest() {
     }
 
     override fun searchMoviesWithServiceError(): IMoviesRepository {
-        //mockWebserver.enqueue(MockResponse().setResponseCode(HttpURLConnection.HTTP_UNAUTHORIZED))
         val unavailableApi = object : MoviesService {
             override suspend fun getMovies(
                 query: String,
@@ -93,31 +77,29 @@ class MoviesRepositoryTestTest : MoviesRepositoryContractTest() {
         return MoviesRepository(offlineApi)
     }
 
-    override fun searchMoviesSuccess(movieList: List<MovieBo>): IMoviesRepository {
-        mockWebserver.enqueue(
-            MockResponse().setResponseCode(200)
-                .setBody(FileUtil.getJson(MOVIES_FIRST_PAGE_JSON).orEmpty())
-        )
-        return repository
+    override fun searchMoviesSuccess(movieList: List<MovieSearchDto.MovieDto>): IMoviesRepository {
+        mockWebserver.dispatcher = CustomDispatcher(movieList)
+        return MoviesRepository(service)
     }
 }
 
-//For now has only sense here in this test
-fun MovieBo.toMovieDto() = MovieSearchDto.MovieDto(id, title, popularity, image)
-
-
-class MoviesRepository(private val api: MoviesService) : IMoviesRepository {
-    override suspend fun searchMovies(query: String): DomainResource<List<MovieBo>> =
-        try {
-            val result = api.getMovies(query)
-            if (result.isSuccessful && result.body() != null)
-                DomainResource.success(result.body()!!.results.map { it.toMovieBo() })
-            else DomainResource.success(emptyList())
-        } catch (e: Throwable) {
-            when (e) {
-                is IOException -> DomainResource.error(DomainError.ConnectivityError)
-                is HttpException -> DomainResource.error(DomainError.ServerError)
-                else -> DomainResource.error(DomainError.Unknown)
-            }
+private class CustomDispatcher(val movieList: List<MovieSearchDto.MovieDto>): Dispatcher() {
+    override fun dispatch(request: RecordedRequest): MockResponse {
+        val searchedMovies = buildString {
+            append("{")
+            append(""""results" : ${movieList.map { it.toResponseEntity() }}""")
+            append("}")
         }
+        return MockResponse().setResponseCode(200).setBody(searchedMovies)
+    }
+}
+
+private fun MovieSearchDto.MovieDto.toResponseEntity(): String {
+    val jsonObject = buildJsonObject {
+        put("id", id)
+        put("title", title)
+        put("popularity", popularity)
+        put("poster_path", image)
+    }
+    return jsonObject.toString()
 }
