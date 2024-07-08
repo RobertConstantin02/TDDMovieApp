@@ -19,21 +19,42 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.tddmovieapp.R
 import com.example.tddmovieapp.presentation.component.MovieItem
 import com.example.tddmovieapp.presentation.model.MovieVO
 
 @Composable
-fun SearchScreen() {
+fun SearchScreen(viewModel: SearchScreenViewModel = hiltViewModel()) {
     // TODO: move state to viewModel
     var searchTextState by remember { mutableStateOf("") }
     val moviesItems by remember { mutableStateOf(emptyList<MovieVO>()) }
-    SearchScreenContent(
-        searchTextState = searchTextState,
-        moviesItems = moviesItems,
-        onValueChange = { newValue -> searchTextState = newValue },
-        onSearchClick = {}
-    )
+    val state by viewModel.uiState.collectAsStateWithLifecycle()
+
+    when {
+        state.success != null -> {
+            SearchScreenContent(
+                searchTextState = searchTextState,
+                moviesItems = state.success!!,
+                onValueChange = { newValue -> searchTextState = newValue },
+                onSearchClick = {}
+            )
+        }
+        state.isLoading -> {
+
+        }
+        state.isEmpty -> {
+
+        }
+        state.error != null -> {
+
+        }
+        state.isQueryFormatError -> {
+
+        }
+
+    }
 }
 
 @Composable

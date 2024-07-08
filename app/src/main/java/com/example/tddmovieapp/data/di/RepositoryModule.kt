@@ -17,5 +17,4 @@ interface RepositoryModule {
     @Singleton
     @Binds
     fun bindLocationRepository(implementation: MoviesRepository): IMoviesRepository
-
 }

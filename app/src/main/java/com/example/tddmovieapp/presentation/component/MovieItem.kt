@@ -12,8 +12,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.tddmovieapp.R
 
 @Composable
 fun MovieItem(
@@ -21,10 +25,14 @@ fun MovieItem(
     imageUrl: String,
     title: String
 ) {
+    val movieItemDescription = stringResource(id = R.string.movie_item)
     Column(
         modifier = Modifier
+            .semantics { contentDescription = movieItemDescription }
             .fillMaxWidth()
-            .height(300.dp).padding(20.dp).border(
+            .height(300.dp)
+            .padding(20.dp)
+            .border(
                 border = BorderStroke(2.dp, Color.Black),
                 shape = RoundedCornerShape(topStart = 10.dp, topEnd = 10.dp)
             ),

@@ -7,6 +7,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.tddmovieapp.domain.di.SearchMovies
 import com.example.tddmovieapp.domain.usecase.SearchMoviesUseCase
+import com.example.tddmovieapp.presentation.di.DispatcherIO
+import com.example.tddmovieapp.presentation.di.SearchQueryValidator
 import com.example.tddmovieapp.presentation.feature.util.Validator
 import com.example.tddmovieapp.presentation.mapper.toErrorVo
 import com.example.tddmovieapp.presentation.mapper.toMovieVo
@@ -22,9 +24,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SearchScreenViewModel @Inject constructor(
-   @SearchMovies private val searchMoviesUseCaseStub: SearchMoviesUseCase,
-    private val queryValidator: Validator<String>,
-    private val backgroundDispatcher: CoroutineDispatcher
+    @SearchMovies private val searchMoviesUseCaseStub: SearchMoviesUseCase,
+    @SearchQueryValidator private val queryValidator: Validator<String>,
+    @DispatcherIO private val backgroundDispatcher: CoroutineDispatcher
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(SearchScreenState())
