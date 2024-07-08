@@ -10,6 +10,7 @@ import com.example.tddmovieapp.domain.model.MovieBo
 import com.example.tddmovieapp.domain.repository.IMoviesRepository
 import retrofit2.HttpException
 import java.io.IOException
+import javax.inject.Inject
 
 //class MoviesRepository(private val moviesDataSource: IMoviesRemoteDataSource) : IMoviesRepository {
 //    override suspend fun searchMovies(query: String): DomainResource<List<MovieBo>> =
@@ -26,7 +27,7 @@ import java.io.IOException
 //        }
 //}
 
-class MoviesRepository(private val api: MoviesService) : IMoviesRepository {
+class MoviesRepository @Inject constructor(private val api: MoviesService) : IMoviesRepository {
     override suspend fun searchMovies(query: String): DomainResource<List<MovieBo>> =
         try {
             val result = api.getMovies(query)

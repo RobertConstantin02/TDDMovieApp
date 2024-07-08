@@ -8,7 +8,7 @@ import com.example.tddmovieapp.presentation.feature.search.SearchScreenEvent
 import com.example.tddmovieapp.presentation.feature.search.SearchScreenViewModel
 import com.example.tddmovieapp.domain.test_doubles.SearchMoviesUseCaseImplConnectivityErrorStub
 import com.example.tddmovieapp.domain.test_doubles.SearchMoviesUseCaseImplServerErrorStub
-import com.example.tddmovieapp.domain.test_doubles.SearchMoviesUseCaseImplSuccessFake
+import com.example.tddmovieapp.domain.test_doubles.SearchMoviesUseCaseImplFake
 import com.example.tddmovieapp.presentation.feature.search.SearchScreenState
 import com.example.tddmovieapp.presentation.feature.util.Validator
 import com.example.tddmovieapp.presentation.mapper.toMovieVo
@@ -81,7 +81,7 @@ class SearchViewModelErrorTest {
             MovieBo(67856, "Terra Nova, Mar Velho", 3.0, "imageUrl3")
         )
         val viewModel = SearchScreenViewModel(
-            SearchMoviesUseCaseImplSuccessFake(
+            SearchMoviesUseCaseImplFake(
                 DomainResource.success(movieListWithManyItems)
             ),
             QueryValidatorFake().also {
@@ -98,8 +98,6 @@ class SearchViewModelErrorTest {
     }
 
     //good query and then malformed query
-
-    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun `given proper first query and second bad query, when search, then isQueryFormatError`() {
         runTest {
@@ -111,7 +109,7 @@ class SearchViewModelErrorTest {
             )
 
             val viewModel = SearchScreenViewModel(
-                SearchMoviesUseCaseImplSuccessFake(
+                SearchMoviesUseCaseImplFake(
                     DomainResource.success(movieListWithManyItems)
                 ),
                 queryValidator,
@@ -157,7 +155,7 @@ class SearchViewModelErrorTest {
                 MovieBo(5675, "Marvel: Black Panther", 5.0, "imageUrl2")
             )
 
-            val searchMoviesUeCase = SearchMoviesUseCaseImplSuccessFake(
+            val searchMoviesUeCase = SearchMoviesUseCaseImplFake(
                 DomainResource.success(movieListWithManyItems)
             )
 

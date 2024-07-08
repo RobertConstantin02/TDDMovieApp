@@ -5,10 +5,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.tddmovieapp.domain.di.SearchMovies
 import com.example.tddmovieapp.domain.usecase.SearchMoviesUseCase
 import com.example.tddmovieapp.presentation.feature.util.Validator
 import com.example.tddmovieapp.presentation.mapper.toErrorVo
 import com.example.tddmovieapp.presentation.mapper.toMovieVo
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -16,9 +18,11 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
-class SearchScreenViewModel(
-    private val searchMoviesUseCaseStub: SearchMoviesUseCase,
+@HiltViewModel
+class SearchScreenViewModel @Inject constructor(
+   @SearchMovies private val searchMoviesUseCaseStub: SearchMoviesUseCase,
     private val queryValidator: Validator<String>,
     private val backgroundDispatcher: CoroutineDispatcher
 ) : ViewModel() {

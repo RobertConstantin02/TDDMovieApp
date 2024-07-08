@@ -2,10 +2,10 @@ package com.example.tddmovieapp.presentation.search
 
 import com.example.tddmovieapp.domain.model.DomainResource
 import com.example.tddmovieapp.domain.model.MovieBo
+import com.example.tddmovieapp.domain.usecase.SearchMoviesUseCaseImplFake
 import com.example.tddmovieapp.presentation.feature.search.SearchScreenEvent
 import com.example.tddmovieapp.presentation.feature.search.SearchScreenState
 import com.example.tddmovieapp.presentation.feature.search.SearchScreenViewModel
-import com.example.tddmovieapp.domain.test_doubles.SearchMoviesUseCaseImplSuccessFake
 import com.example.tddmovieapp.presentation.feature.util.QueryValidator
 import com.example.tddmovieapp.presentation.mapper.toMovieVo
 import com.example.tddmovieapp.util.CoroutineExtension
@@ -26,7 +26,7 @@ class SearchViewModelSuccessTest {
     @BeforeEach
     fun setUp() {
         viewModel = SearchScreenViewModel(
-            SearchMoviesUseCaseImplSuccessFake(
+            SearchMoviesUseCaseImplFake(
                 DomainResource.success(emptyList())
             ),
             QueryValidator(),
@@ -65,10 +65,7 @@ class SearchViewModelSuccessTest {
         val expectedState = SearchScreenState().copy(isLoading = false, isEmpty = true)
         val input = "not existing movie"
         viewModel = SearchScreenViewModel(
-            SearchMoviesUseCaseImplSuccessFake(
-                DomainResource.success(emptyList())
-
-            ),
+            SearchMoviesUseCaseImplFake(DomainResource.success(emptyList())),
             QueryValidator(),
             backgroundTestDispatcher
         )
@@ -87,7 +84,7 @@ class SearchViewModelSuccessTest {
             isEmpty = false,
             success = movieListWithSingleItem.map { it.toMovieVo() })
         viewModel = SearchScreenViewModel(
-            SearchMoviesUseCaseImplSuccessFake(
+            SearchMoviesUseCaseImplFake(
                 DomainResource.success(movieListWithSingleItem)
             ),
             QueryValidator(),
@@ -112,7 +109,7 @@ class SearchViewModelSuccessTest {
             isEmpty = false,
             success = movieListWithManyItems.map { it.toMovieVo() })
         viewModel = SearchScreenViewModel(
-            SearchMoviesUseCaseImplSuccessFake(
+            SearchMoviesUseCaseImplFake(
                 DomainResource.success(movieListWithManyItems),
             ),
             QueryValidator(),
