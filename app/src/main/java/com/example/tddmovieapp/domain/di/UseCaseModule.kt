@@ -13,20 +13,19 @@ import javax.inject.Singleton
 @Qualifier
 annotation class SearchMovies
 
-@Module(includes = [UseCaseModule.Declarations::class])
-@InstallIn(SingletonComponent::class)
-object UseCaseModule {
+//@Module(includes = [UseCaseModule.Declarations::class])
+//@InstallIn(SingletonComponent::class)
+//object UseCaseModule {
     /**
      * For example if I have a separate module in topLevel I will create a UseCaseModule and inside
      * modules with each use case based on the feature. For example FeedUseCaseDeclarations. Myabe try.
      */
     @InstallIn(SingletonComponent::class)
     @Module
-    interface Declarations {
+    interface UseCaseModule {
 
-        @SearchMovies
         @Singleton
         @Binds
         fun bindGetFavoriteCharacters(implementation: SearchMoviesUseCaseImpl): SearchMoviesUseCase
     }
-}
+//}

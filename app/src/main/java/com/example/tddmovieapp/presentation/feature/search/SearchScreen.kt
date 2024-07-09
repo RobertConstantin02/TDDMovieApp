@@ -34,12 +34,7 @@ fun SearchScreen(viewModel: SearchScreenViewModel = hiltViewModel()) {
 
     when {
         state.success != null -> {
-            SearchScreenContent(
-                searchTextState = searchTextState,
-                moviesItems = state.success!!,
-                onValueChange = { newValue -> searchTextState = newValue },
-                onSearchClick = {}
-            )
+
         }
         state.isLoading -> {
 
@@ -55,13 +50,20 @@ fun SearchScreen(viewModel: SearchScreenViewModel = hiltViewModel()) {
         }
 
     }
+
+    SearchScreenContent(
+        searchTextState = viewModel.queryState,
+        moviesItems = state.success,
+        onValueChange = { newValue -> viewModel.onEvent(SearchScreenEvent.OnUpdateQuery(newValue)) },
+        onSearchClick = { viewModel.onEvent(SearchScreenEvent.OnSearchMovies)}
+    )
 }
 
 @Composable
 fun SearchScreenContent(
     modifier: Modifier = Modifier,
     searchTextState: String,
-    moviesItems: List<MovieVO>,
+    moviesItems: List<MovieVO>?,
     onValueChange: (newValue: String) -> Unit,
     onSearchClick: (input: String) -> Unit
 ) {
@@ -93,8 +95,10 @@ fun SearchScreenContent(
         LazyColumn(
             modifier = modifier.semantics { contentDescription = lazyColumnContentDescription }
         ) {
-            items(moviesItems) {
-                MovieItem(onItemClick = {}, imageUrl = it.image.orEmpty(), it.title.orEmpty())
+            moviesItems?.let {
+                items(it) {
+                    MovieItem(onItemClick = {}, imageUrl = it.image.orEmpty(), it.title.orEmpty())
+                }
             }
         }
     }

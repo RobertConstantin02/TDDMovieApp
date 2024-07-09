@@ -5,7 +5,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.tddmovieapp.domain.di.SearchMovies
 import com.example.tddmovieapp.domain.usecase.SearchMoviesUseCase
 import com.example.tddmovieapp.presentation.di.DispatcherIO
 import com.example.tddmovieapp.presentation.di.SearchQueryValidator
@@ -24,7 +23,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SearchScreenViewModel @Inject constructor(
-    @SearchMovies private val searchMoviesUseCaseStub: SearchMoviesUseCase,
+    private val searchMovies: SearchMoviesUseCase,
     @SearchQueryValidator private val queryValidator: Validator<String>,
     @DispatcherIO private val backgroundDispatcher: CoroutineDispatcher
 ) : ViewModel() {
@@ -46,7 +45,7 @@ class SearchScreenViewModel @Inject constructor(
         if (queryValidator.validate(queryState)) {
             viewModelScope.launch {
                 withContext(backgroundDispatcher) {
-                    searchMoviesUseCaseStub.invoke(
+                    searchMovies.invoke(
                         input,
                         success = { searchedMovies ->
                             _uiState.update { state ->

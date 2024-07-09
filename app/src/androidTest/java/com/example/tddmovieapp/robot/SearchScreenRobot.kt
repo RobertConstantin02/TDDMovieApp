@@ -1,6 +1,7 @@
 package com.example.tddmovieapp.robot
 
 import androidx.compose.ui.test.assertAny
+import androidx.compose.ui.test.hasContentDescription
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.AndroidComposeTestRule
 import androidx.compose.ui.test.onChildren
@@ -38,6 +39,6 @@ class SearchScreenVerification(private val rule: AndroidComposeTestRule<Activity
     fun searchedMoviesAreShown() {
         val list = rule.activity.getString(R.string.search_screen_lazy_column)
         val movie = rule.activity.getString(R.string.movie_item)
-        rule.onNodeWithContentDescription(list).onChildren().assertAny(hasText(movie))
+        rule.onNodeWithContentDescription(list).onChildren().assertAny(hasContentDescription(movie))
     }
 }

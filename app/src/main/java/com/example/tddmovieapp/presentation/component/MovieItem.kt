@@ -40,7 +40,7 @@ fun MovieItem(
     ) {
         ImageFromUrl(
             modifier = Modifier.height(200.dp),
-            url = { imageUrl }
+            url = "https://image.tmdb.org/t/p/w500".plus(imageUrl)
         )
         Text(text = title)
     }

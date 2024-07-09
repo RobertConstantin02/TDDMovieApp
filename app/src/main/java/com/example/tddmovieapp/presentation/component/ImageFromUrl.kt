@@ -10,17 +10,17 @@ import coil.size.Size
 
 @Composable
 fun ImageFromUrl(
-    url: () -> String,
+    url: String,
     modifier: Modifier = Modifier,
 ) {
     AsyncImage(
         modifier = modifier,
         model = ImageRequest
             .Builder(LocalContext.current)
-            .data(url())
+            .data(url)
             .size(Size.ORIGINAL)
             .crossfade(true).build(),
         contentDescription = null,
-        contentScale = ContentScale.FillWidth
+        contentScale = ContentScale.Crop
     )
 }
