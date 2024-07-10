@@ -1,9 +1,9 @@
 package com.example.tddmovieapp.data.repository
 
+import com.example.tddmovieapp.data.mapper.toMovieBo
 import com.example.tddmovieapp.data.model.MovieSearchDto
-import com.example.tddmovieapp.data.test_doubles.MoviesRepositoryFake
+import com.example.tddmovieapp.domain.test_doubles.MoviesRepositoryFake
 import com.example.tddmovieapp.domain.model.DomainError
-import com.example.tddmovieapp.domain.model.MovieBo
 import com.example.tddmovieapp.domain.repository.IMoviesRepository
 
 /**
@@ -16,11 +16,17 @@ import com.example.tddmovieapp.domain.repository.IMoviesRepository
 class MoviesRepositoryFakeTestTest : MoviesRepositoryContractTest() {
 
     override fun searchMoviesWithServiceError(): IMoviesRepository =
-        MoviesRepositoryFake(null, DomainError.ServerError)
+        MoviesRepositoryFake(
+            null,
+            DomainError.ServerError
+        )
 
     override fun searchMoviesWithConnectivityError(): IMoviesRepository =
-        MoviesRepositoryFake(null, DomainError.ConnectivityError)
+        MoviesRepositoryFake(
+            null,
+            DomainError.ConnectivityError
+        )
 
     override fun searchMoviesSuccess(movieList: List<MovieSearchDto.MovieDto>): IMoviesRepository =
-        MoviesRepositoryFake(movieList)
+        MoviesRepositoryFake(movieList.map { it.toMovieBo() })
 }

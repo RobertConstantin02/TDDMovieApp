@@ -27,9 +27,6 @@ import com.example.tddmovieapp.presentation.model.MovieVO
 
 @Composable
 fun SearchScreen(viewModel: SearchScreenViewModel = hiltViewModel()) {
-    // TODO: move state to viewModel
-    var searchTextState by remember { mutableStateOf("") }
-    val moviesItems by remember { mutableStateOf(emptyList<MovieVO>()) }
     val state by viewModel.uiState.collectAsStateWithLifecycle()
 
     when {

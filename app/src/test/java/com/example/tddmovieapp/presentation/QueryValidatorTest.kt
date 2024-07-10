@@ -17,7 +17,10 @@ class QueryValidatorTest {
         "'iron-man', false",
         "'* iron', false"
     )
-    fun `given a proper query, when search, then validator returns true`(query: String, expected: Boolean) {
+    fun `given a proper query, when search, then validator returns true`(
+        query: String,
+        expected: Boolean
+    ) {
         //Given
         val validator = QueryValidator()
         //When

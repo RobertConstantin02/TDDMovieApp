@@ -1,7 +1,7 @@
 package com.example.tddmovieapp.domain.usecase
 
 import com.example.tddmovieapp.data.model.MovieSearchDto
-import com.example.tddmovieapp.data.test_doubles.MoviesRepositoryFake
+import com.example.tddmovieapp.domain.test_doubles.MoviesRepositoryFake
 import com.example.tddmovieapp.domain.model.DomainError
 import com.example.tddmovieapp.domain.model.MovieBo
 import com.google.common.truth.Truth.assertThat
@@ -16,8 +16,8 @@ class SearchMovieUseCaseTest {
     private var isErrorCalled: Boolean = false
 
     private val movieList = listOf(
-        MovieSearchDto.MovieDto(4532, "Marvel: Avangers", 4.1, "imageUrl1"),
-        MovieSearchDto.MovieDto(5675, "Marvel: Black Panther", 5.0, "imageUrl2"),
+        MovieBo(4532, "Marvel: Avangers", 4.1, "imageUrl1"),
+        MovieBo(5675, "Marvel: Black Panther", 5.0, "imageUrl2"),
     )
 
     private lateinit var successCallback: (listMovies: List<MovieBo>) -> Unit
@@ -36,7 +36,11 @@ class SearchMovieUseCaseTest {
         //Given
         val validQuery = "not exists in db"
         //When
-        SearchMoviesUseCaseImpl(MoviesRepositoryFake(movieList)).invoke(
+        SearchMoviesUseCaseImpl(
+            MoviesRepositoryFake(
+                movieList
+            )
+        ).invoke(
             validQuery,
             successCallback,
             emptyCallback,
@@ -52,7 +56,11 @@ class SearchMovieUseCaseTest {
         val validQuery = "marvel"
 
         //When
-        SearchMoviesUseCaseImpl(MoviesRepositoryFake(movieList)).invoke(
+        SearchMoviesUseCaseImpl(
+            MoviesRepositoryFake(
+                movieList
+            )
+        ).invoke(
             validQuery,
             successCallback,
             emptyCallback,
@@ -67,7 +75,12 @@ class SearchMovieUseCaseTest {
         //Given
         val validQuery = "marvel"
         //When
-        SearchMoviesUseCaseImpl(MoviesRepositoryFake(movieList, DomainError.ConnectivityError)).invoke(
+        SearchMoviesUseCaseImpl(
+            MoviesRepositoryFake(
+                movieList,
+                DomainError.ConnectivityError
+            )
+        ).invoke(
             validQuery,
             successCallback,
             emptyCallback,

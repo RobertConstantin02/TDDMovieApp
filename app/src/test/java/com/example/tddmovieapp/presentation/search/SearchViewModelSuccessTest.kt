@@ -26,9 +26,7 @@ class SearchViewModelSuccessTest {
     @BeforeEach
     fun setUp() {
         viewModel = SearchScreenViewModel(
-            SearchMoviesUseCaseImplFake(
-                DomainResource.success(emptyList())
-            ),
+            SearchMoviesUseCaseImplFake(DomainResource.success(emptyList())),
             QueryValidator(),
             backgroundTestDispatcher
         )

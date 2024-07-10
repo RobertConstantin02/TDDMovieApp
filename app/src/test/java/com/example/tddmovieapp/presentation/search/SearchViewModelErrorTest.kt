@@ -3,13 +3,13 @@ package com.example.tddmovieapp.presentation.search
 import com.example.tddmovieapp.domain.model.DomainError
 import com.example.tddmovieapp.domain.model.DomainResource
 import com.example.tddmovieapp.domain.model.MovieBo
+import com.example.test.commons.feature.search.domain.test_doubles.SearchMoviesUseCaseImplConnectivityErrorStub
+import com.example.test.commons.feature.search.domain.test_doubles.SearchMoviesUseCaseImplServerErrorStub
+import com.example.tddmovieapp.domain.usecase.SearchMoviesUseCaseImplFake
 import com.example.tddmovieapp.presentation.feature.search.SearchError
 import com.example.tddmovieapp.presentation.feature.search.SearchScreenEvent
-import com.example.tddmovieapp.presentation.feature.search.SearchScreenViewModel
-import com.example.tddmovieapp.domain.test_doubles.SearchMoviesUseCaseImplConnectivityErrorStub
-import com.example.tddmovieapp.domain.test_doubles.SearchMoviesUseCaseImplServerErrorStub
-import com.example.tddmovieapp.domain.test_doubles.SearchMoviesUseCaseImplFake
 import com.example.tddmovieapp.presentation.feature.search.SearchScreenState
+import com.example.tddmovieapp.presentation.feature.search.SearchScreenViewModel
 import com.example.tddmovieapp.presentation.feature.util.Validator
 import com.example.tddmovieapp.presentation.mapper.toMovieVo
 import com.example.tddmovieapp.util.CoroutineExtension
@@ -33,7 +33,7 @@ class SearchViewModelErrorTest {
     fun `when search and server error`() {
         //Given
         val viewModel = SearchScreenViewModel(
-            SearchMoviesUseCaseImplServerErrorStub(),
+            com.example.test.commons.feature.search.domain.test_doubles.SearchMoviesUseCaseImplServerErrorStub(),
             QueryValidatorFake(),
             backgroundTestDispatcher
         )
@@ -48,7 +48,7 @@ class SearchViewModelErrorTest {
     fun `when search and connectivity error`() {
         //Given
         val viewModel = SearchScreenViewModel(
-            SearchMoviesUseCaseImplConnectivityErrorStub(),
+            com.example.test.commons.feature.search.domain.test_doubles.SearchMoviesUseCaseImplConnectivityErrorStub(),
             QueryValidatorFake(),
             backgroundTestDispatcher
         )
@@ -72,7 +72,7 @@ class SearchViewModelErrorTest {
         "'', false",
         "'   ', false"
     )
-    fun `given a query with les than 3 characters or special characters, when search, then isQueryFormatError true`(
+    fun `given a bad format query, when search, then isQueryFormatError true`(
         query: String, isQueryFormatError: Boolean
     ) {
         //Given
@@ -81,9 +81,7 @@ class SearchViewModelErrorTest {
             MovieBo(67856, "Terra Nova, Mar Velho", 3.0, "imageUrl3")
         )
         val viewModel = SearchScreenViewModel(
-            SearchMoviesUseCaseImplFake(
-                DomainResource.success(movieListWithManyItems)
-            ),
+            SearchMoviesUseCaseImplFake(DomainResource.success(movieListWithManyItems)),
             QueryValidatorFake().also {
                 it.isValidQuery = isQueryFormatError
             },
@@ -99,19 +97,17 @@ class SearchViewModelErrorTest {
 
     //good query and then malformed query
     @Test
-    fun `given proper first query and second bad query, when search, then isQueryFormatError`() {
+    fun `given proper first query and second bad query, then isQueryFormatError true`() {
         runTest {
             //Given
-            var queryValidator = QueryValidatorFake()
+            val queryValidator = QueryValidatorFake()
             val movieListWithManyItems = listOf<MovieBo>(
                 MovieBo(4532, "Marvel: Avangers", 4.1, "imageUrl1"),
                 MovieBo(5675, "Marvel: Black Panther", 5.0, "imageUrl2")
             )
 
             val viewModel = SearchScreenViewModel(
-                SearchMoviesUseCaseImplFake(
-                    DomainResource.success(movieListWithManyItems)
-                ),
+                SearchMoviesUseCaseImplFake(DomainResource.success(movieListWithManyItems)),
                 queryValidator,
                 backgroundTestDispatcher
             )
@@ -127,7 +123,7 @@ class SearchViewModelErrorTest {
 
             val state1 = deliveredState[0]
             val state2 = deliveredState[1]
-            //Then
+            //Then data stays but will appear the error
             val expectedDeliveredState1 = SearchScreenState().copy(
                 isLoading = false,
                 isEmpty = false,
@@ -147,7 +143,7 @@ class SearchViewModelErrorTest {
     }
 
     @Test
-    fun `given connectivity error after success search, error is of type ConnectivityError and data available`() =
+    fun `given connectivity error after success search, then error is ConnectivityError and data available`() =
         runTest {
             //Given
             val movieListWithManyItems = listOf<MovieBo>(

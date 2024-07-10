@@ -15,6 +15,10 @@ import org.junit.jupiter.api.extension.ExtendWith
 
 /**
  * This contract test encapsulates the data, test and abstract functions.
+ * We have to think  when we make the contract test thatthe fake repositopry is part of the domain but the
+ * contract and test of the production reposiutory is part of the data. Then the contract test
+ * will contain the data layer models and the fake will tranform it to its needs to domain.
+ * The real repositry test will use dto tough.
  */
 @ExtendWith(CoroutineExtension::class)
 abstract class MoviesRepositoryContractTest {
