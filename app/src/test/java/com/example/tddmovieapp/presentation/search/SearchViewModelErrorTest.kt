@@ -3,8 +3,8 @@ package com.example.tddmovieapp.presentation.search
 import com.example.tddmovieapp.domain.model.DomainError
 import com.example.tddmovieapp.domain.model.DomainResource
 import com.example.tddmovieapp.domain.model.MovieBo
-import com.example.test.commons.feature.search.domain.test_doubles.SearchMoviesUseCaseImplConnectivityErrorStub
-import com.example.test.commons.feature.search.domain.test_doubles.SearchMoviesUseCaseImplServerErrorStub
+import com.example.tddmovieapp.domain.test_doubles.SearchMoviesUseCaseImplConnectivityErrorStub
+import com.example.tddmovieapp.domain.test_doubles.SearchMoviesUseCaseImplServerErrorStub
 import com.example.tddmovieapp.domain.usecase.SearchMoviesUseCaseImplFake
 import com.example.tddmovieapp.presentation.feature.search.SearchError
 import com.example.tddmovieapp.presentation.feature.search.SearchScreenEvent
@@ -33,7 +33,7 @@ class SearchViewModelErrorTest {
     fun `when search and server error`() {
         //Given
         val viewModel = SearchScreenViewModel(
-            com.example.test.commons.feature.search.domain.test_doubles.SearchMoviesUseCaseImplServerErrorStub(),
+            SearchMoviesUseCaseImplServerErrorStub(),
             QueryValidatorFake(),
             backgroundTestDispatcher
         )
@@ -48,7 +48,7 @@ class SearchViewModelErrorTest {
     fun `when search and connectivity error`() {
         //Given
         val viewModel = SearchScreenViewModel(
-            com.example.test.commons.feature.search.domain.test_doubles.SearchMoviesUseCaseImplConnectivityErrorStub(),
+            SearchMoviesUseCaseImplConnectivityErrorStub(),
             QueryValidatorFake(),
             backgroundTestDispatcher
         )
@@ -117,7 +117,8 @@ class SearchViewModelErrorTest {
                 viewModel.onEvent(SearchScreenEvent.OnUpdateQuery("marvel"))
                 viewModel.onEvent(SearchScreenEvent.OnSearchMovies)
                 //second search with bad query
-                queryValidator.isValidQuery = false
+                viewModel.onEvent(SearchScreenEvent.OnUpdateQuery("ma"))
+                queryValidator.isValidQuery = false //? why without not working
                 viewModel.onEvent(SearchScreenEvent.OnSearchMovies)
             }
 

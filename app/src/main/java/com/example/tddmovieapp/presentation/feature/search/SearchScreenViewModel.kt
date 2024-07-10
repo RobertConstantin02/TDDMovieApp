@@ -36,7 +36,12 @@ class SearchScreenViewModel @Inject constructor(
 
     fun onEvent(event: SearchScreenEvent) {
         when (event) {
-            is SearchScreenEvent.OnUpdateQuery -> queryState = event.input
+            is SearchScreenEvent.OnUpdateQuery -> {
+                queryState = event.input
+                _uiState.update { state ->
+                    state.copy(isQueryFormatError = false)
+                }
+            }
             is SearchScreenEvent.OnSearchMovies -> search(queryState)
         }
     }
