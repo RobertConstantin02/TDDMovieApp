@@ -38,8 +38,10 @@ class SearchScreenViewModel @Inject constructor(
         when (event) {
             is SearchScreenEvent.OnUpdateQuery -> {
                 queryState = event.input
-                _uiState.update { state ->
-                    state.copy(isQueryFormatError = false)
+                if (_uiState.value.isQueryFormatError) {
+                    _uiState.update { state ->
+                        state.copy(isQueryFormatError = false)
+                    }
                 }
             }
             is SearchScreenEvent.OnSearchMovies -> search(queryState)
@@ -47,6 +49,9 @@ class SearchScreenViewModel @Inject constructor(
     }
 
     private fun search(input: String) {
+        _uiState.update { state ->
+            state.copy(isLoading = true)
+        }
         if (queryValidator.validate(queryState)) {
             viewModelScope.launch {
                 withContext(backgroundDispatcher) {
@@ -79,7 +84,7 @@ class SearchScreenViewModel @Inject constructor(
             }
         } else {
             _uiState.update { state ->
-                state.copy(isQueryFormatError = true)
+                state.copy(isQueryFormatError = true, isLoading = false)
             }
         }
     }

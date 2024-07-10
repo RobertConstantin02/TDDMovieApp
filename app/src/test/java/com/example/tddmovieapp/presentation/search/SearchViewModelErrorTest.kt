@@ -144,6 +144,50 @@ class SearchViewModelErrorTest {
     }
 
     @Test
+    fun `given a bad query, when type new search, then isQueryFormatError false`() = runTest {
+        //Given
+        val queryValidator = QueryValidatorFake()
+        val movieListWithManyItems = listOf<MovieBo>(
+            MovieBo(4532, "Marvel: Avangers", 4.1, "imageUrl1"),
+            MovieBo(5675, "Marvel: Black Panther", 5.0, "imageUrl2")
+        )
+
+        val viewModel = SearchScreenViewModel(
+            SearchMoviesUseCaseImplFake(DomainResource.success(movieListWithManyItems)),
+            queryValidator,
+            backgroundTestDispatcher
+        )
+
+        val deliveredState = observeFlow(viewModel.uiState, true) {
+            //first search with proper query
+            viewModel.onEvent(SearchScreenEvent.OnUpdateQuery("ma"))
+            queryValidator.isValidQuery = false
+            viewModel.onEvent(SearchScreenEvent.OnSearchMovies)
+            //second search with bad query
+            viewModel.onEvent(SearchScreenEvent.OnUpdateQuery("marvel"))
+        }
+
+        val state1 = deliveredState[1]
+        val state2 = deliveredState[2]
+        //Then data stays but will appear the error
+        val expectedDeliveredState1 = SearchScreenState().copy(
+            isLoading = false,
+            isEmpty = false,
+            success = null,
+            isQueryFormatError = true
+        )
+        val expectedDeliveredState2 = SearchScreenState().copy(
+            isLoading = false,
+            isEmpty = false,
+            success = null,
+            isQueryFormatError = false
+        )
+        //Then
+        assertThat(state1).isEqualTo(expectedDeliveredState1)
+        assertThat(state2).isEqualTo(expectedDeliveredState2)
+    }
+
+    @Test
     fun `given connectivity error after success search, then error is ConnectivityError and data available`() =
         runTest {
             //Given
